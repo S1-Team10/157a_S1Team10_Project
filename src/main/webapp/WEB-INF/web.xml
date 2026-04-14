@@ -3,5 +3,39 @@
  "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-  <display-name>Archetype Created Web Application</display-name>
+
+  <display-name>ThreadLink</display-name>
+  
+  <context-param>
+    <param-name>DB_NAME</param-name>
+    <param-value>ThreadLink</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>DB_CUSTOMER_USER</param-name>
+    <param-value>customer_app</param-value>
+  </context-param>
+  <context-param>
+    <param-name>DB_CUSTOMER_PASSWORD</param-name>
+    <param-value>customer_password</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>DB_SALES_USER</param-name>
+    <param-value>sales_app</param-value>
+  </context-param>
+  <context-param>
+    <param-name>DB_SALES_PASSWORD</param-name>
+    <param-value>sales_password</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>DB_MANAGER_USER</param-name>
+    <param-value>manager_app</param-value>
+  </context-param>
+  <context-param>
+    <param-name>DB_MANAGER_PASSWORD</param-name>
+    <param-value>manager_password</param-value>
+  </context-param>
+
 </web-app>
