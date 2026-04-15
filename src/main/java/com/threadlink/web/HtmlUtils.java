@@ -14,5 +14,6 @@ public final class HtmlUtils {
       .replace("<", "&lt;")
       .replace(">", "&gt;")
       .replace("\"", "&quot;")
+      .replace("'", "&#39;");
   }
 }
