@@ -1,0 +1,5 @@
+com\threadlink\web\HtmlUtils.class
+com\threadlink\web\JsonUtils.class
+com\threadlink\catalog\ItemRepository.class
+com\threadlink\catalog\Item.class
+com\threadlink\web\CatalogApiServlet.class
