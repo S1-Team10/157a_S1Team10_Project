@@ -35,7 +35,7 @@
         <input type="tel" name="phoneNumber" placeholder="e.g. 4081234567"/>
 
         <label>Birthdate</label>
-        <input type="date" name="birthdate:"/>
+        <input type="date" name="birthdate"/>
 
         <div class="checkbox-row">
             <input type="checkbox" name="isSubscribed" value="1"/>
