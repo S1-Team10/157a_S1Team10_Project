@@ -62,7 +62,7 @@
           </div>
         </div>
 
-        <p class="message error" data-results-error></p>
+        <p class="message error" data-results-error hidden></p>
         <p class="message" data-results-status>Loading products...</p>
 
         <div class="catalog-layout">

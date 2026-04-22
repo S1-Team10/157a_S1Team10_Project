@@ -1,244 +1,257 @@
-(function () {
-  var page = document.querySelector("[data-catalog-page]");
-  var form = document.querySelector("[data-catalog-form]");
-  var input = document.querySelector("[data-search-input]");
-  var status = document.querySelector("[data-results-status]");
-  var error = document.querySelector("[data-results-error]");
-  var table = document.querySelector("[data-results-table]");
-  var tableBody = document.querySelector("[data-results-body]");
-  var detailEmpty = document.querySelector("[data-item-detail-empty]");
-  var detailCard = document.querySelector("[data-item-detail-card]");
-  var detailId = document.querySelector("[data-detail-id]");
-  var detailName = document.querySelector("[data-detail-name]");
-  var detailPrice = document.querySelector("[data-detail-price]");
-  var detailDescription = document.querySelector("[data-detail-description]");
-  var detailSizes = document.querySelector("[data-detail-sizes]");
-  var detailColors = document.querySelector("[data-detail-colors]");
-  var detailStock = document.querySelector("[data-detail-stock]");
+(() => {
+  // ── DOM refs ──────────────────────────────────────────────────────────────
+  const form        = document.querySelector("[data-catalog-form]");
+  const searchInput = document.querySelector("[data-search-input]");
+  const page        = document.querySelector("[data-catalog-page]");
+  const statusEl    = document.querySelector("[data-results-status]");
+  const errorEl     = document.querySelector("[data-results-error]");
+  const table       = document.querySelector("[data-results-table]");
+  const tbody       = document.querySelector("[data-results-body]");
 
-  if (!page || !form || !input || !status || !error || !table || !tableBody) {
-    return;
+  const detailPanel     = document.querySelector("[data-item-detail]");
+  const detailEmpty     = document.querySelector("[data-item-detail-empty]");
+  const detailCard      = document.querySelector("[data-item-detail-card]");
+  const detailId        = document.querySelector("[data-detail-id]");
+  const detailName      = document.querySelector("[data-detail-name]");
+  const detailPrice     = document.querySelector("[data-detail-price]");
+  const detailDesc      = document.querySelector("[data-detail-description]");
+  const detailSizes     = document.querySelector("[data-detail-sizes]");
+  const detailColors    = document.querySelector("[data-detail-colors]");
+  const detailStock     = document.querySelector("[data-detail-stock]");
+
+  // ── State ─────────────────────────────────────────────────────────────────
+  const apiUrl = form.dataset.apiUrl;
+  let allItems = [];
+  let sortCol  = null;   // "itemId" | "itemName" | "description" | "price"
+  let sortDir  = "asc";  // "asc" | "desc"
+  let selectedId = parseInt(page.dataset.selectedItemId, 10) || null;
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
+  function setStatus(msg) {
+    statusEl.textContent = msg;
+    statusEl.hidden = !msg;
   }
 
-  var apiUrl = form.getAttribute("data-api-url");
-  var initialSelectedItemId = Number(page.getAttribute("data-selected-item-id"));
-  var state = {
-    items: [],
-    selectedItemId: Number.isNaN(initialSelectedItemId) ? null : initialSelectedItemId
-  };
-
-  form.addEventListener("submit", function (event) {
-    event.preventDefault();
-    state.selectedItemId = null;
-    fetchResults(input.value.trim());
-  });
-
-  tableBody.addEventListener("click", function (event) {
-    var itemButton = event.target.closest("[data-item-select]");
-    if (!itemButton) {
-      return;
-    }
-
-    var itemId = Number(itemButton.getAttribute("data-item-select"));
-    selectItem(itemId, true);
-  });
-
-  fetchResults(input.value.trim(), false);
-
-  function fetchResults(query, pushHistory) {
-    setLoadingState(true);
-    clearMessages();
-
-    var shouldPushHistory = pushHistory !== false;
-    var requestUrl = apiUrl + "?q=" + encodeURIComponent(query);
-
-    fetch(requestUrl, {
-      headers: {
-        Accept: "application/json"
-      }
-    })
-      .then(function (response) {
-        return response.json().then(function (data) {
-          return {
-            ok: response.ok,
-            data: data
-          };
-        });
-      })
-      .then(function (result) {
-        if (!result.ok) {
-          throw new Error(result.data.error || "Unable to load products right now.");
-        }
-
-        state.items = Array.isArray(result.data.items) ? result.data.items : [];
-
-        if (state.selectedItemId !== null && !findItemById(state.selectedItemId)) {
-          state.selectedItemId = null;
-        }
-
-        renderResults();
-        renderDetail();
-
-        if (shouldPushHistory) {
-          updateQueryString(query, state.selectedItemId);
-        }
-      })
-      .catch(function (fetchError) {
-        table.hidden = true;
-        clearDetail();
-        status.textContent = "";
-        error.textContent = fetchError.message;
-      })
-      .finally(function () {
-        setLoadingState(false);
-      });
+  function setError(msg) {
+    errorEl.textContent = msg;
+    errorEl.hidden = !msg;
   }
 
-  function renderResults() {
-    tableBody.innerHTML = "";
+  function formatPrice(raw) {
+    const n = parseFloat(raw);
+    return isNaN(n) ? raw : "$" + n.toFixed(2);
+  }
 
-    if (!state.items.length) {
-      table.hidden = true;
-      status.textContent = 'No items matched "' + input.value.trim() + '".';
-      return;
-    }
-
-    table.hidden = false;
-    status.textContent = "Found " + state.items.length + " item(s). Click a product name to view stock details.";
-
-    state.items.forEach(function (item) {
-      var row = document.createElement("tr");
-      if (item.itemId === state.selectedItemId) {
-        row.className = "is-selected";
+  // ── Sorting ───────────────────────────────────────────────────────────────
+  function sortedItems() {
+    if (!sortCol) return allItems;
+    return [...allItems].sort((a, b) => {
+      let av = a[sortCol];
+      let bv = b[sortCol];
+      // numeric sort for itemId / price
+      if (sortCol === "itemId" || sortCol === "price") {
+        av = parseFloat(av);
+        bv = parseFloat(bv);
+      } else {
+        av = (av || "").toLowerCase();
+        bv = (bv || "").toLowerCase();
       }
-
-      row.innerHTML =
-        "<td>" + escapeHtml(String(item.itemId)) + "</td>" +
-        "<td><button class=\"product-link\" type=\"button\" data-item-select=\"" + escapeHtml(String(item.itemId)) + "\"><strong>" +
-        escapeHtml(item.itemName) +
-        "</strong></button></td>" +
-        "<td>" + escapeHtml(item.description) + "</td>" +
-        "<td class=\"price\">$" + escapeHtml(String(item.price)) + "</td>";
-
-      tableBody.appendChild(row);
+      if (av < bv) return sortDir === "asc" ? -1 : 1;
+      if (av > bv) return sortDir === "asc" ?  1 : -1;
+      return 0;
     });
   }
 
-  function selectItem(itemId, pushHistory) {
-    state.selectedItemId = itemId;
-    renderResults();
-    renderDetail();
-
-    if (pushHistory !== false) {
-      updateQueryString(input.value.trim(), itemId);
-    }
+  function setSortButtons() {
+    document.querySelectorAll(".sort-button").forEach(btn => {
+      if (btn.dataset.col === sortCol) {
+        btn.dataset.sortDirection = sortDir;
+      } else {
+        delete btn.dataset.sortDirection;
+      }
+    });
   }
 
-  function renderDetail() {
-    var selectedItem = findItemById(state.selectedItemId);
+  // ── Render table ──────────────────────────────────────────────────────────
+  function renderTable() {
+    const items = sortedItems();
+    tbody.innerHTML = "";
 
-    if (!selectedItem) {
-      clearDetail();
+    if (!items.length) {
+      table.hidden = true;
+      setStatus("No items matched your search.");
       return;
     }
 
-    if (detailEmpty) {
-      detailEmpty.hidden = true;
-    }
+    items.forEach(item => {
+      const tr = document.createElement("tr");
+      if (item.itemId === selectedId) tr.classList.add("is-selected");
 
-    if (detailCard) {
-      detailCard.hidden = false;
-    }
+      tr.innerHTML = `
+        <td>${item.itemId}</td>
+        <td>
+          <button class="product-link" type="button" data-item-id="${item.itemId}">
+            ${escapeHtml(item.itemName)}
+          </button>
+        </td>
+        <td>${escapeHtml(item.description)}</td>
+        <td class="price">${formatPrice(item.price)}</td>
+      `;
 
-    if (detailId) {
-      detailId.textContent = "Item #" + selectedItem.itemId;
-    }
+      tr.querySelector(".product-link").addEventListener("click", () => {
+        selectItem(item.itemId);
+      });
 
-    if (detailName) {
-      detailName.textContent = selectedItem.itemName;
-    }
+      tbody.appendChild(tr);
+    });
 
-    if (detailPrice) {
-      detailPrice.textContent = "$" + selectedItem.price;
-    }
-
-    if (detailDescription) {
-      detailDescription.textContent = selectedItem.description;
-    }
-
-    if (detailSizes) {
-      detailSizes.textContent = "Not available";
-    }
-
-    if (detailColors) {
-      detailColors.textContent = "Not available";
-    }
-
-    if (detailStock) {
-      detailStock.textContent = "Min: " + selectedItem.minStock + " | Max: " + selectedItem.maxStock;
-    }
+    table.hidden = false;
+    setStatus("");
   }
 
-  function clearDetail() {
-    if (detailEmpty) {
-      detailEmpty.hidden = false;
-    }
-
-    if (detailCard) {
-      detailCard.hidden = true;
-    }
-
-    updateQueryString(input.value.trim(), null);
-  }
-
-  function findItemById(itemId) {
-    if (itemId === null) {
-      return null;
-    }
-
-    for (var index = 0; index < state.items.length; index += 1) {
-      if (Number(state.items[index].itemId) === Number(itemId)) {
-        return state.items[index];
-      }
-    }
-
-    return null;
-  }
-
-  function clearMessages() {
-    error.textContent = "";
-    status.textContent = "";
-  }
-
-  function setLoadingState(isLoading) {
-    form.classList.toggle("is-loading", isLoading);
-    input.disabled = isLoading;
-  }
-
-  function updateQueryString(query, itemId) {
-    var url = new URL(window.location.href);
-
-    if (query) {
-      url.searchParams.set("q", query);
-    } else {
-      url.searchParams.delete("q");
-    }
-
-    if (itemId) {
-      url.searchParams.set("itemId", String(itemId));
-    } else {
-      url.searchParams.delete("itemId");
-    }
-
-    window.history.replaceState({}, "", url.toString());
-  }
-
-  function escapeHtml(text) {
-    return String(text)
+  // Basic HTML escaping on the client side for safety
+  function escapeHtml(str) {
+    if (str == null) return "";
+    return str
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#39;");
   }
+
+  // ── Detail panel ──────────────────────────────────────────────────────────
+  function selectItem(id) {
+    selectedId = id;
+
+    // Highlight row
+    document.querySelectorAll("[data-results-body] tr").forEach(tr => {
+      tr.classList.toggle(
+        "is-selected",
+        tr.querySelector("[data-item-id]")?.dataset.itemId == id
+      );
+    });
+
+    // Update URL param without reloading
+    const url = new URL(window.location);
+    url.searchParams.set("itemId", id);
+    history.replaceState(null, "", url);
+
+    const item = allItems.find(i => i.itemId === id);
+    if (!item) return;
+
+    detailId.textContent   = `Item #${item.itemId}`;
+    detailName.textContent = item.itemName || "—";
+    detailPrice.textContent = formatPrice(item.price);
+    detailDesc.textContent  = item.description || "No description available.";
+
+    // sizes/colors are not in the Item model — show a friendly placeholder
+    detailSizes.textContent  = "See in-store for available sizes";
+    detailColors.textContent = "See in-store for available colors";
+    detailStock.textContent  =
+      `Min ${item.minStock} — Max ${item.maxStock}`;
+
+    detailEmpty.hidden = true;
+    detailCard.hidden  = false;
+  }
+
+  function clearDetail() {
+    selectedId = null;
+    detailEmpty.hidden = false;
+    detailCard.hidden  = true;
+    const url = new URL(window.location);
+    url.searchParams.delete("itemId");
+    history.replaceState(null, "", url);
+  }
+
+  // ── Fetch ─────────────────────────────────────────────────────────────────
+  async function fetchItems(query) {
+    setError("");
+    setStatus("Loading products…");
+    table.hidden = true;
+    form.classList.add("is-loading");
+
+    const params = new URLSearchParams({ q: query });
+
+    try {
+      const res  = await fetch(`${apiUrl}?${params}`);
+      const data = await res.json();
+
+      if (!res.ok || data.error) {
+        throw new Error(data.error || `Server error ${res.status}`);
+      }
+
+      allItems = data.items || [];
+      renderTable();
+
+      // Restore selected item from URL param if still in results
+      if (selectedId && allItems.find(i => i.itemId === selectedId)) {
+        selectItem(selectedId);
+      } else {
+        clearDetail();
+      }
+
+    } catch (err) {
+      allItems = [];
+      table.hidden = true;
+      setStatus("");
+      setError(`Could not load results: ${err.message}`);
+    } finally {
+      form.classList.remove("is-loading");
+    }
+  }
+
+  // ── Sort button wiring ────────────────────────────────────────────────────
+  function buildSortableHeaders() {
+    const cols = [
+      { label: "Item ID",     col: "itemId"      },
+      { label: "Product",     col: "itemName"     },
+      { label: "Description", col: "description"  },
+      { label: "Price",       col: "price"        },
+    ];
+
+    const ths = table.querySelectorAll("thead th");
+    ths.forEach((th, i) => {
+      if (!cols[i]) return;
+      const { label, col } = cols[i];
+      th.innerHTML = `
+        <button class="sort-button" type="button" data-col="${col}">
+          ${label}
+        </button>
+      `;
+      th.querySelector(".sort-button").addEventListener("click", () => {
+        if (sortCol === col) {
+          sortDir = sortDir === "asc" ? "desc" : "asc";
+        } else {
+          sortCol = col;
+          sortDir = "asc";
+        }
+        setSortButtons();
+        renderTable();
+      });
+    });
+  }
+
+  // ── Form submit ───────────────────────────────────────────────────────────
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    const q = searchInput.value.trim();
+
+    // Sync URL so the page is bookmarkable
+    const url = new URL(window.location);
+    url.searchParams.set("q", q);
+    if (selectedId) url.searchParams.set("itemId", selectedId);
+    history.pushState(null, "", url);
+
+    fetchItems(q);
+  });
+
+  // ── Init ──────────────────────────────────────────────────────────────────
+  // Hide error element on load (it has no hidden attr in the JSP)
+  errorEl.hidden = true;
+
+  buildSortableHeaders();
+
+  // Run an initial search using whatever q= is already in the URL
+  fetchItems(searchInput.value.trim());
 })();
