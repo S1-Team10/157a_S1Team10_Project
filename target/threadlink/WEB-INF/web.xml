@@ -14,4 +14,15 @@
     <servlet-name>catalogApiServlet</servlet-name>
     <url-pattern>/api/items</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>RewardsServlet</servlet-name>
+    <servlet-class>com.threadlink.web.RewardsServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>RewardsServlet</servlet-name>
+    <url-pattern>/rewards</url-pattern>
+  </servlet-mapping>
+
 </web-app>
