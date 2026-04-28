@@ -1,4 +1,5 @@
 <%@ page import="java.sql.*"%>
+<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%
     String errorMessage = (String) request.getAttribute("errorMessage");
     String successMessage = (String) request.getAttribute("successMessage");
@@ -6,7 +7,9 @@
 
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>ThreadLink - Create Account</title>
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/home.css">
 </head>
 <body>
 <div class="register-box">
@@ -39,7 +42,7 @@
 
         <div class="checkbox-row">
             <input type="checkbox" name="isSubscribed" value="1"/>
-            <label>Subscribe to newsletter</label>
+            <label>Sign me up for the ThreadLink Rewards Program</label>
         </div>
 
         <input type="submit" value="Create Account"/>
