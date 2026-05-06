@@ -7,7 +7,7 @@
 
   <display-name>ThreadLink</display-name>
 
-  
+
   <!-- Database credentials -->
 
   <context-param>
@@ -82,6 +82,15 @@
   <servlet-mapping>
     <servlet-name>LogoutServlet</servlet-name>
     <url-pattern>/logout</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>catalogApiServlet</servlet-name>
+    <servlet-class>com.threadlink.web.CatalogApiServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>catalogApiServlet</servlet-name>
+    <url-pattern>/api/items</url-pattern>
   </servlet-mapping>
 
 </web-app>
