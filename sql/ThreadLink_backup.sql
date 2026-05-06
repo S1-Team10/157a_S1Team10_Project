@@ -1,4 +1,4 @@
--- MySQL dump 10.13  Distrib 9.6.0, for macos15 (arm64)
+-- MySQL dump 10.13  Distrib 9.6.0, for macos26.3 (arm64)
 --
 -- Host: localhost    Database: ThreadLink
 -- ------------------------------------------------------
@@ -18,10 +18,10 @@ SET @MYSQLDUMP_TEMP_LOG_BIN = @@SESSION.SQL_LOG_BIN;
 SET @@SESSION.SQL_LOG_BIN= 0;
 
 --
--- GTID state at the beginning of the backup 
+-- GTID state at the beginning of the backup
 --
 
-SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ 'b2f0de9a-038d-11f1-bb74-5702030b2dc3:1-41';
+
 
 --
 -- Table structure for table `CustomerDiscounts`
@@ -31,12 +31,12 @@ DROP TABLE IF EXISTS `CustomerDiscounts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `CustomerDiscounts` (
-  `customerEmail` varchar(100) NOT NULL,
-  `customerDiscountCode` varchar(20) NOT NULL,
-  PRIMARY KEY (`customerEmail`,`customerDiscountCode`),
-  KEY `customerDiscountCode` (`customerDiscountCode`),
-  CONSTRAINT `customerdiscounts_ibfk_1` FOREIGN KEY (`customerEmail`) REFERENCES `Customers` (`email`),
-  CONSTRAINT `customerdiscounts_ibfk_2` FOREIGN KEY (`customerDiscountCode`) REFERENCES `Discounts` (`discountCode`)
+                                     `customerEmail` varchar(100) NOT NULL,
+                                     `customerDiscountCode` varchar(20) NOT NULL,
+                                     PRIMARY KEY (`customerEmail`,`customerDiscountCode`),
+                                     KEY `customerDiscountCode` (`customerDiscountCode`),
+                                     CONSTRAINT `customerdiscounts_ibfk_1` FOREIGN KEY (`customerEmail`) REFERENCES `Customers` (`email`),
+                                     CONSTRAINT `customerdiscounts_ibfk_2` FOREIGN KEY (`customerDiscountCode`) REFERENCES `Discounts` (`discountCode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -58,14 +58,14 @@ DROP TABLE IF EXISTS `CustomerPlaces`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `CustomerPlaces` (
-  `customerEmail` varchar(100) NOT NULL,
-  `customerOrderID` int NOT NULL,
-  `totalAmount` decimal(10,2) NOT NULL,
-  `orderDate` date NOT NULL,
-  PRIMARY KEY (`customerEmail`,`customerOrderID`),
-  KEY `customerOrderID` (`customerOrderID`),
-  CONSTRAINT `customerplaces_ibfk_1` FOREIGN KEY (`customerEmail`) REFERENCES `Customers` (`email`),
-  CONSTRAINT `customerplaces_ibfk_2` FOREIGN KEY (`customerOrderID`) REFERENCES `Orders` (`orderID`)
+                                  `customerEmail` varchar(100) NOT NULL,
+                                  `customerOrderID` int NOT NULL,
+                                  `totalAmount` decimal(10,2) NOT NULL,
+                                  `orderDate` date NOT NULL,
+                                  PRIMARY KEY (`customerEmail`,`customerOrderID`),
+                                  KEY `customerOrderID` (`customerOrderID`),
+                                  CONSTRAINT `customerplaces_ibfk_1` FOREIGN KEY (`customerEmail`) REFERENCES `Customers` (`email`),
+                                  CONSTRAINT `customerplaces_ibfk_2` FOREIGN KEY (`customerOrderID`) REFERENCES `Orders` (`orderID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -87,12 +87,14 @@ DROP TABLE IF EXISTS `Customers`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Customers` (
-  `email` varchar(100) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `phoneNumber` varchar(15) DEFAULT NULL,
-  `birthdate` date DEFAULT NULL,
-  `isSubscribed` tinyint(1) DEFAULT '0',
-  PRIMARY KEY (`email`)
+                             `firstName` varchar(50) DEFAULT NULL,
+                             `lastName` varchar(50) DEFAULT NULL,
+                             `email` varchar(100) NOT NULL,
+                             `password` varchar(255) NOT NULL,
+                             `phoneNumber` varchar(15) DEFAULT NULL,
+                             `birthdate` date DEFAULT NULL,
+                             `isSubscribed` tinyint(1) DEFAULT '0',
+                             PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -102,7 +104,7 @@ CREATE TABLE `Customers` (
 
 LOCK TABLES `Customers` WRITE;
 /*!40000 ALTER TABLE `Customers` DISABLE KEYS */;
-INSERT INTO `Customers` VALUES ('alice.johnson@gmail.com','hashed_pw_001','4081234567','1995-03-12',1),('bob.smith@yahoo.com','hashed_pw_002','4082345678','1990-07-24',0),('carol.white@hotmail.com','hashed_pw_003','4083456789','1988-11-05',1),('david.lee@gmail.com','hashed_pw_004','4084567890','2000-01-30',1),('emma.davis@outlook.com','hashed_pw_005',NULL,'1997-06-15',0),('frank.miller@gmail.com','hashed_pw_006','4086789012','1985-09-22',1),('grace.wilson@icloud.com','hashed_pw_007','4087890123',NULL,0),('henry.moore@gmail.com','hashed_pw_008','4088901234','1993-04-18',1),('isabella.taylor@yahoo.com','hashed_pw_009','4089012345','2001-12-03',0),('james.anderson@gmail.com','hashed_pw_010','4080123456','1996-08-27',1),('karen.thomas@hotmail.com','hashed_pw_011','4081357924','1989-02-14',1),('liam.jackson@outlook.com','hashed_pw_012',NULL,'1998-05-09',0);
+INSERT INTO `Customers` VALUES (NULL,NULL,'alice.johnson@gmail.com','hashed_pw_001','4081234567','1995-03-12',1),(NULL,NULL,'bob.smith@yahoo.com','hashed_pw_002','4082345678','1990-07-24',0),(NULL,NULL,'carol.white@hotmail.com','hashed_pw_003','4083456789','1988-11-05',1),(NULL,NULL,'david.lee@gmail.com','hashed_pw_004','4084567890','2000-01-30',1),(NULL,NULL,'emma.davis@outlook.com','hashed_pw_005',NULL,'1997-06-15',0),(NULL,NULL,'frank.miller@gmail.com','hashed_pw_006','4086789012','1985-09-22',1),(NULL,NULL,'grace.wilson@icloud.com','hashed_pw_007','4087890123',NULL,0),(NULL,NULL,'henry.moore@gmail.com','hashed_pw_008','4088901234','1993-04-18',1),(NULL,NULL,'isabella.taylor@yahoo.com','hashed_pw_009','4089012345','2001-12-03',0),(NULL,NULL,'james.anderson@gmail.com','hashed_pw_010','4080123456','1996-08-27',1),(NULL,NULL,'karen.thomas@hotmail.com','hashed_pw_011','4081357924','1989-02-14',1),(NULL,NULL,'liam.jackson@outlook.com','hashed_pw_012',NULL,'1998-05-09',0);
 /*!40000 ALTER TABLE `Customers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -114,12 +116,12 @@ DROP TABLE IF EXISTS `Discounts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Discounts` (
-  `discountCode` varchar(20) NOT NULL,
-  `discountName` varchar(100) NOT NULL,
-  `percentOff` decimal(5,2) NOT NULL,
-  `startDate` date NOT NULL,
-  `endDate` date NOT NULL,
-  PRIMARY KEY (`discountCode`)
+                             `discountCode` varchar(20) NOT NULL,
+                             `discountName` varchar(100) NOT NULL,
+                             `percentOff` decimal(5,2) NOT NULL,
+                             `startDate` date NOT NULL,
+                             `endDate` date NOT NULL,
+                             PRIMARY KEY (`discountCode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -141,12 +143,12 @@ DROP TABLE IF EXISTS `EmployeeDiscounts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `EmployeeDiscounts` (
-  `employeeID` varchar(10) NOT NULL,
-  `employeeDiscountCode` varchar(20) NOT NULL,
-  PRIMARY KEY (`employeeID`,`employeeDiscountCode`),
-  KEY `employeeDiscountCode` (`employeeDiscountCode`),
-  CONSTRAINT `employeediscounts_ibfk_1` FOREIGN KEY (`employeeID`) REFERENCES `Employees` (`employeeID`),
-  CONSTRAINT `employeediscounts_ibfk_2` FOREIGN KEY (`employeeDiscountCode`) REFERENCES `Discounts` (`discountCode`)
+                                     `employeeID` varchar(10) NOT NULL,
+                                     `employeeDiscountCode` varchar(20) NOT NULL,
+                                     PRIMARY KEY (`employeeID`,`employeeDiscountCode`),
+                                     KEY `employeeDiscountCode` (`employeeDiscountCode`),
+                                     CONSTRAINT `employeediscounts_ibfk_1` FOREIGN KEY (`employeeID`) REFERENCES `Employees` (`employeeID`),
+                                     CONSTRAINT `employeediscounts_ibfk_2` FOREIGN KEY (`employeeDiscountCode`) REFERENCES `Discounts` (`discountCode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -168,14 +170,14 @@ DROP TABLE IF EXISTS `EmployeePlaces`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `EmployeePlaces` (
-  `employeeID` varchar(10) NOT NULL,
-  `employeeOrderID` int NOT NULL,
-  `totalAmount` decimal(10,2) NOT NULL,
-  `orderDate` date NOT NULL,
-  PRIMARY KEY (`employeeID`,`employeeOrderID`),
-  KEY `employeeOrderID` (`employeeOrderID`),
-  CONSTRAINT `employeeplaces_ibfk_1` FOREIGN KEY (`employeeID`) REFERENCES `Employees` (`employeeID`),
-  CONSTRAINT `employeeplaces_ibfk_2` FOREIGN KEY (`employeeOrderID`) REFERENCES `Orders` (`orderID`)
+                                  `employeeID` varchar(10) NOT NULL,
+                                  `employeeOrderID` int NOT NULL,
+                                  `totalAmount` decimal(10,2) NOT NULL,
+                                  `orderDate` date NOT NULL,
+                                  PRIMARY KEY (`employeeID`,`employeeOrderID`),
+                                  KEY `employeeOrderID` (`employeeOrderID`),
+                                  CONSTRAINT `employeeplaces_ibfk_1` FOREIGN KEY (`employeeID`) REFERENCES `Employees` (`employeeID`),
+                                  CONSTRAINT `employeeplaces_ibfk_2` FOREIGN KEY (`employeeOrderID`) REFERENCES `Orders` (`orderID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -197,11 +199,11 @@ DROP TABLE IF EXISTS `Employees`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Employees` (
-  `employeeID` varchar(10) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `phoneNumber` varchar(15) NOT NULL,
-  PRIMARY KEY (`employeeID`)
+                             `employeeID` varchar(10) NOT NULL,
+                             `name` varchar(100) NOT NULL,
+                             `email` varchar(100) NOT NULL,
+                             `phoneNumber` varchar(15) NOT NULL,
+                             PRIMARY KEY (`employeeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -223,12 +225,12 @@ DROP TABLE IF EXISTS `Hires`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Hires` (
-  `salesAssociateID` varchar(10) NOT NULL,
-  `managerID` varchar(10) NOT NULL,
-  PRIMARY KEY (`salesAssociateID`,`managerID`),
-  KEY `managerID` (`managerID`),
-  CONSTRAINT `hires_ibfk_1` FOREIGN KEY (`salesAssociateID`) REFERENCES `SalesAssociates` (`salesAssociateID`),
-  CONSTRAINT `hires_ibfk_2` FOREIGN KEY (`managerID`) REFERENCES `Managers` (`managerID`)
+                         `salesAssociateID` varchar(10) NOT NULL,
+                         `managerID` varchar(10) NOT NULL,
+                         PRIMARY KEY (`salesAssociateID`,`managerID`),
+                         KEY `managerID` (`managerID`),
+                         CONSTRAINT `hires_ibfk_1` FOREIGN KEY (`salesAssociateID`) REFERENCES `SalesAssociates` (`salesAssociateID`),
+                         CONSTRAINT `hires_ibfk_2` FOREIGN KEY (`managerID`) REFERENCES `Managers` (`managerID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -250,13 +252,13 @@ DROP TABLE IF EXISTS `Items`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Items` (
-  `itemID` int NOT NULL AUTO_INCREMENT,
-  `itemName` varchar(100) NOT NULL,
-  `description` text,
-  `price` decimal(10,2) NOT NULL,
-  `minStock` int NOT NULL,
-  `maxStock` int NOT NULL,
-  PRIMARY KEY (`itemID`)
+                         `itemID` int NOT NULL AUTO_INCREMENT,
+                         `itemName` varchar(100) NOT NULL,
+                         `description` text,
+                         `price` decimal(10,2) NOT NULL,
+                         `minStock` int NOT NULL,
+                         `maxStock` int NOT NULL,
+                         PRIMARY KEY (`itemID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -278,9 +280,9 @@ DROP TABLE IF EXISTS `Managers`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Managers` (
-  `managerID` varchar(10) NOT NULL,
-  PRIMARY KEY (`managerID`),
-  CONSTRAINT `managers_ibfk_1` FOREIGN KEY (`managerID`) REFERENCES `Employees` (`employeeID`) ON DELETE CASCADE ON UPDATE CASCADE
+                            `managerID` varchar(10) NOT NULL,
+                            PRIMARY KEY (`managerID`),
+                            CONSTRAINT `managers_ibfk_1` FOREIGN KEY (`managerID`) REFERENCES `Employees` (`employeeID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -302,12 +304,12 @@ DROP TABLE IF EXISTS `OrderItems`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `OrderItems` (
-  `orderID` int NOT NULL,
-  `itemID` int NOT NULL,
-  PRIMARY KEY (`orderID`,`itemID`),
-  KEY `itemID` (`itemID`),
-  CONSTRAINT `orderitems_ibfk_1` FOREIGN KEY (`orderID`) REFERENCES `Orders` (`orderID`),
-  CONSTRAINT `orderitems_ibfk_2` FOREIGN KEY (`itemID`) REFERENCES `Items` (`itemID`)
+                              `orderID` int NOT NULL,
+                              `itemID` int NOT NULL,
+                              PRIMARY KEY (`orderID`,`itemID`),
+                              KEY `itemID` (`itemID`),
+                              CONSTRAINT `orderitems_ibfk_1` FOREIGN KEY (`orderID`) REFERENCES `Orders` (`orderID`),
+                              CONSTRAINT `orderitems_ibfk_2` FOREIGN KEY (`itemID`) REFERENCES `Items` (`itemID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -329,8 +331,8 @@ DROP TABLE IF EXISTS `Orders`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Orders` (
-  `orderID` int NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`orderID`)
+                          `orderID` int NOT NULL AUTO_INCREMENT,
+                          PRIMARY KEY (`orderID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -352,9 +354,9 @@ DROP TABLE IF EXISTS `SalesAssociates`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `SalesAssociates` (
-  `salesAssociateID` varchar(10) NOT NULL,
-  PRIMARY KEY (`salesAssociateID`),
-  CONSTRAINT `salesassociates_ibfk_1` FOREIGN KEY (`salesAssociateID`) REFERENCES `Employees` (`employeeID`) ON DELETE CASCADE ON UPDATE CASCADE
+                                   `salesAssociateID` varchar(10) NOT NULL,
+                                   PRIMARY KEY (`salesAssociateID`),
+                                   CONSTRAINT `salesassociates_ibfk_1` FOREIGN KEY (`salesAssociateID`) REFERENCES `Employees` (`employeeID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -376,12 +378,12 @@ DROP TABLE IF EXISTS `UpdatesDiscount`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `UpdatesDiscount` (
-  `managerID` varchar(10) NOT NULL,
-  `discountCode` varchar(20) NOT NULL,
-  PRIMARY KEY (`managerID`,`discountCode`),
-  KEY `discountCode` (`discountCode`),
-  CONSTRAINT `updatesdiscount_ibfk_1` FOREIGN KEY (`managerID`) REFERENCES `Managers` (`managerID`),
-  CONSTRAINT `updatesdiscount_ibfk_2` FOREIGN KEY (`discountCode`) REFERENCES `Discounts` (`discountCode`)
+                                   `managerID` varchar(10) NOT NULL,
+                                   `discountCode` varchar(20) NOT NULL,
+                                   PRIMARY KEY (`managerID`,`discountCode`),
+                                   KEY `discountCode` (`discountCode`),
+                                   CONSTRAINT `updatesdiscount_ibfk_1` FOREIGN KEY (`managerID`) REFERENCES `Managers` (`managerID`),
+                                   CONSTRAINT `updatesdiscount_ibfk_2` FOREIGN KEY (`discountCode`) REFERENCES `Discounts` (`discountCode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -403,12 +405,12 @@ DROP TABLE IF EXISTS `UpdatesItem`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `UpdatesItem` (
-  `managerID` varchar(10) NOT NULL,
-  `itemID` int NOT NULL,
-  PRIMARY KEY (`managerID`,`itemID`),
-  KEY `itemID` (`itemID`),
-  CONSTRAINT `updatesitem_ibfk_1` FOREIGN KEY (`managerID`) REFERENCES `Managers` (`managerID`),
-  CONSTRAINT `updatesitem_ibfk_2` FOREIGN KEY (`itemID`) REFERENCES `Items` (`itemID`)
+                               `managerID` varchar(10) NOT NULL,
+                               `itemID` int NOT NULL,
+                               PRIMARY KEY (`managerID`,`itemID`),
+                               KEY `itemID` (`itemID`),
+                               CONSTRAINT `updatesitem_ibfk_1` FOREIGN KEY (`managerID`) REFERENCES `Managers` (`managerID`),
+                               CONSTRAINT `updatesitem_ibfk_2` FOREIGN KEY (`itemID`) REFERENCES `Items` (`itemID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -432,4 +434,4 @@ SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-03-25 18:40:20
+-- Dump completed on 2026-04-17 13:38:48
