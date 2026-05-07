@@ -1,4 +1,4 @@
-<%@ page import="java.sql.*"%>
+<%@ page import="java.sql.*" %>
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%
     String errorMessage = (String) request.getAttribute("errorMessage");
@@ -12,45 +12,72 @@
     <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/home.css">
 </head>
 <body>
-<div class="register-box">
+<div class="page-shell">
     <h2>Create Account</h2>
+    <nav class="site-nav">
+        <div class="brand">
+            <span class="brand-mark">ThreadLink</span>
+            <a class="brand-name" href="index.jsp">Modern Storefront</a>
+        </div>
+        <div class="nav-links">
+            <a class="nav-link" href="index.jsp">Home</a>
+            <a class="nav-link" href="search/index.jsp">Search</a>
+            <a class="nav-link login-link" href="login.jsp">Log In</a>
+        </div>
+    </nav>
 
-    <% if (errorMessage != null){ %>
-    <p class="error"><%=errorMessage%></p>
-<%}%>
-    <% if (successMessage != null){ %>
-        <p class="success"><%= successMessage%></p>
-<%}%>
-    <form method="post" action="registerAction.jsp">
-        <label>First name</label>
-        <input type="text" name="firstName" required/>
-
-        <label>Last name</label>
-        <input type="text" name="lastName">
-
-        <label>Email</label>
-        <input type="email" name="email" required/>
-
-        <label>Password</label>
-        <input type="password" name="password" required/>
-
-        <label>Phone Number</label>
-        <input type="tel" name="phoneNumber" placeholder="e.g. 4081234567"/>
-
-        <label>Birthdate</label>
-        <input type="date" name="birthdate"/>
-
-        <div class="checkbox-row">
-            <input type="checkbox" name="isSubscribed" value="1"/>
-            <label>Sign me up for the ThreadLink Rewards Program</label>
+    <section class="login-panel">
+        <div class="section-heading">
+            <div>
+                <span class="eyebrow">New Customer</span>
+                <h2>Create your account</h2>
+            </div>
         </div>
 
-        <input type="submit" value="Create Account"/>
-    </form>
+        <div class="login-layout">
+            <div class="login-copy">
+                <p>Join ThreadLink to access your orders, earn rewards, and shop faster.</p>
+                <p>Already have an account? <a href="login.jsp">Log in here.</a></p>
+            </div>
 
-    <div class="login-link">
-        Already have an account? <a href="login.jsp">Login</a>
-    </div>
+            <form class="login-form" method="post" action="registerAction.jsp">
+
+                <% if (errorMessage != null) { %>
+                <p class="message error"><%= errorMessage %>
+                </p>
+                <% } %>
+
+                <% if (successMessage != null) { %>
+                <p class="message" style="color: #2d6a2d; font-weight: 700;"><%= successMessage %>
+                </p>
+                <% } %>
+
+                <input class="login-input" type="text" name="firstName" placeholder="First name" required>
+                <input class="login-input" type="text" name="lastName" placeholder="Last name">
+                <input class="login-input" type="email" name="email" placeholder="Email address" required>
+
+                <div>
+                    <input class="login-input" type="password" name="password" placeholder="Password" required>
+                    <ul class="password-requirements">
+                        <li>At least 8 characters</li>
+                        <li>One uppercase letter (A–Z)</li>
+                        <li>One lowercase letter (a–z)</li>
+                        <li>One number (0–9)</li>
+                    </ul>
+                </div>
+
+                <input class="login-input" type="tel" name="phoneNumber" placeholder="Phone number (e.g. 4081234567)">
+                <input class="login-input" type="date" name="birthdate">
+
+                <label class="rewards-checkbox">
+                    <input type="checkbox" name="isSubscribed" value="1">
+                    Sign me up for the ThreadLink Rewards Program
+                </label>
+
+                <button class="button button-primary" type="submit">Create Account</button>
+            </form>
+        </div>
+    </section>
 </div>
 </body>
 </html>
