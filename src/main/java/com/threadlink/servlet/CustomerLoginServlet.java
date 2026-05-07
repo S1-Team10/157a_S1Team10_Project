@@ -7,6 +7,9 @@ import com.threadlink.db.Role;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 
 public class CustomerLoginServlet extends HttpServlet {
@@ -26,13 +29,25 @@ public class CustomerLoginServlet extends HttpServlet {
             req.getRequestDispatcher("/login.jsp").forward(req, res);
             return;
         }
+        String hashedPassword;
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(password.getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hash) {
+                sb.append(String.format("%02x", b));
+            }
+            hashedPassword = sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new ServletException("SHA-256 not available.", e);
+        }
 
         try (Connection conn = DB.get(Role.CUSTOMER, getServletContext());
              PreparedStatement ps = conn.prepareStatement(
                 "SELECT email FROM Customers WHERE email = ? AND password = ?")) {
 
             ps.setString(1, email.trim());
-            ps.setString(2, password); // TODO: hash incoming password before comparing
+            ps.setString(2, hashedPassword);
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {

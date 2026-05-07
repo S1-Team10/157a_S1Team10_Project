@@ -25,7 +25,11 @@
             --radius-sm: 12px;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
             font-family: "Trebuchet MS", "Segoe UI", sans-serif;
@@ -35,10 +39,9 @@
             align-items: center;
             justify-content: center;
             padding: 40px 24px;
-            background:
-                    radial-gradient(circle at top left, rgba(184, 92, 56, 0.18), transparent 32%),
-                    radial-gradient(circle at right, rgba(84, 111, 82, 0.12), transparent 28%),
-                    linear-gradient(180deg, #f8f3eb 0%, #f0e6d8 100%);
+            background: radial-gradient(circle at top left, rgba(184, 92, 56, 0.18), transparent 32%),
+            radial-gradient(circle at right, rgba(84, 111, 82, 0.12), transparent 28%),
+            linear-gradient(180deg, #f8f3eb 0%, #f0e6d8 100%);
         }
 
         .container {
@@ -48,8 +51,14 @@
         }
 
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(16px); }
-            to   { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .brand-mark {
@@ -75,7 +84,11 @@
             padding: 2.5rem;
         }
 
-        h2 { font-size: 1.6rem; font-weight: 700; margin-bottom: 6px; }
+        h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
 
         .subtitle {
             color: var(--muted);
@@ -84,8 +97,15 @@
             margin-bottom: 28px;
         }
 
-        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .field { margin-bottom: 20px; }
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
 
         label {
             display: block;
@@ -123,7 +143,11 @@
             border-color: rgba(184, 92, 56, 0.45);
         }
 
-        .divider { border: none; border-top: 1px solid var(--border); margin: 8px 0 24px; }
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 8px 0 24px;
+        }
 
         .checkbox-row {
             display: flex;
@@ -162,8 +186,13 @@
             transition: background 0.2s, transform 0.1s;
         }
 
-        input[type="submit"]:hover { background: var(--accent-dark); }
-        input[type="submit"]:active { transform: scale(0.98); }
+        input[type="submit"]:hover {
+            background: var(--accent-dark);
+        }
+
+        input[type="submit"]:active {
+            transform: scale(0.98);
+        }
 
         .message {
             padding: 0.85rem 1rem;
@@ -172,8 +201,19 @@
             margin-bottom: 20px;
         }
 
-        .error   { color: #9c2f21; font-weight: 700; background: rgba(156,47,33,0.08); border: 1px solid rgba(156,47,33,0.2); }
-        .success { color: #2f6b3a; font-weight: 700; background: rgba(47,107,58,0.08); border: 1px solid rgba(47,107,58,0.2); }
+        .error {
+            color: #9c2f21;
+            font-weight: 700;
+            background: rgba(156, 47, 33, 0.08);
+            border: 1px solid rgba(156, 47, 33, 0.2);
+        }
+
+        .success {
+            color: #2f6b3a;
+            font-weight: 700;
+            background: rgba(47, 107, 58, 0.08);
+            border: 1px solid rgba(47, 107, 58, 0.2);
+        }
 
         .footer-link {
             text-align: center;
@@ -182,11 +222,20 @@
             color: var(--muted);
         }
 
-        .footer-link a { color: var(--accent-dark); text-decoration: none; font-weight: 700; }
-        .footer-link a:hover { text-decoration: underline; }
+        .footer-link a {
+            color: var(--accent-dark);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .footer-link a:hover {
+            text-decoration: underline;
+        }
 
         @media (max-width: 480px) {
-            .row { grid-template-columns: 1fr; }
+            .row {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -194,12 +243,14 @@
 <div class="register-box">
     <h2>Create Account</h2>
 
-    <% if (errorMessage != null){ %>
-    <p class="error"><%=errorMessage%></p>
-<%}%>
-    <% if (successMessage != null){ %>
-        <p class="success"><%= successMessage%></p>
-<%}%>
+    <% if (errorMessage != null) { %>
+    <p class="error"><%=errorMessage%>
+    </p>
+    <%}%>
+    <% if (successMessage != null) { %>
+    <p class="success"><%= successMessage%>
+    </p>
+    <%}%>
     <form method="post" action="registerAction.jsp">
         <label>First name</label>
         <input type="text" name="firstName" required/>
@@ -210,9 +261,16 @@
         <label>Email</label>
         <input type="email" name="email" required/>
 
-        <label>Password</label>
-        <input type="password" name="password" required/>
-
+        <div class="field">
+            <label>Password</label>
+            <input type="password" name="password" required/>
+            <ul style="margin: 8px 0 0; padding-left: 1.2rem; font-size: 0.85rem; color: var(--muted); line-height: 1.8;">
+                <li>At least 8 characters</li>
+                <li>One uppercase letter (A to Z)</li>
+                <li>One lowercase letter (a to z)</li>
+                <li>One number (0 to 9)</li>
+            </ul>
+        </div>
         <label>Phone Number</label>
         <input type="tel" name="phoneNumber" placeholder="e.g. 4081234567"/>
 

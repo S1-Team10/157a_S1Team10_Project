@@ -58,12 +58,13 @@
   <!-- Servlets -->
 
   <servlet>
-    <servlet-name>CustomerLoginServlet</servlet-name>
-    <servlet-class>com.threadlink.servlet.CustomerLoginServlet</servlet-class>
+    <servlet-name>RewardsServlet</servlet-name>
+    <servlet-class>com.threadlink.web.RewardsServlet</servlet-class>
   </servlet>
+
   <servlet-mapping>
-    <servlet-name>CustomerLoginServlet</servlet-name>
-    <url-pattern>/login</url-pattern>
+    <servlet-name>RewardsServlet</servlet-name>
+    <url-pattern>/rewards</url-pattern>
   </servlet-mapping>
 
   <servlet>

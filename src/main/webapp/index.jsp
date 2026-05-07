@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ThreadLink | Shop the Collection</title>
-    <link rel="stylesheet" href="assets/css/home.css">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/home.css">
   </head>
   <body>
     <%
@@ -94,11 +94,10 @@
             </div>
           </div>
 
-          <form class="login-form" method="post" action="#">
+          <form class="login-form" method="post" action="<%= request.getContextPath() %>/login">
             <input class="login-input" type="email" name="email" placeholder="Email address">
             <input class="login-input" type="password" name="password" placeholder="Password">
             <button class="button button-primary" type="submit">Log In</button>
-            <p class="login-note">This form is a visual placeholder only. No login processing was added.</p>
           </form>
         </div>
       </section>

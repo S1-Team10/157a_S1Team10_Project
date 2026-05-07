@@ -61,8 +61,8 @@
   // CONNECTION TO THE DATABASE
 
   String db = application.getInitParameter("DB_NAME");
-  String dbUser = application.getInitParameter("DB_CUSTOMER_USER");
-  String dbPassword = application.getInitParameter("DB_CUSTOMER_PASSWORD");
+  String dbUser = application.getInitParameter("DB_USER");
+  String dbPassword = application.getInitParameter("DB_PASSWORD");
 
   try {
     Class.forName("com.mysql.cj.jdbc.Driver");
