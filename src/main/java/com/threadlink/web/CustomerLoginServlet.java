@@ -30,9 +30,8 @@ public class CustomerLoginServlet extends HttpServlet {
             return;
         }
 
-<<<<<<< HEAD
         String hashedPassword;
-
+        
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] hash = md.digest(password.getBytes(StandardCharsets.UTF_8));
@@ -43,8 +42,6 @@ public class CustomerLoginServlet extends HttpServlet {
             throw new ServletException("SHA-256 not available.", e);
         }
 
-=======
->>>>>>> a05ef76 (added employee/home and deleted auth/)
         try (Connection conn = DB.get(Role.CUSTOMER, getServletContext());
              PreparedStatement ps = conn.prepareStatement(
                 "SELECT email FROM Customers WHERE email = ? AND password = ?")) {
