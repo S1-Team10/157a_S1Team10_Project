@@ -17,7 +17,7 @@ public class CustomerLoginServlet extends HttpServlet {
     // Called when the customer login form is submitted.
     // Expects form fields: "email" and "password".
     // On success: creates a session and redirects to /customer/home.
-    // On failure: forwards back to /login.jsp with an "error" attribute.
+    // On failure: forwards back to the account login JSP with an "error" attribute.
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
@@ -26,23 +26,12 @@ public class CustomerLoginServlet extends HttpServlet {
 
         if (email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
             req.setAttribute("error", "Email and password are required.");
-            req.getRequestDispatcher("/login.jsp").forward(req, res);
+            req.getRequestDispatcher("/account/login/login.jsp").forward(req, res);
             return;
-        }
-        String hashedPassword;
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hash = md.digest(password.getBytes(StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder();
-            for (byte b : hash) {
-                sb.append(String.format("%02x", b));
-            }
-            hashedPassword = sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            throw new ServletException("SHA-256 not available.", e);
         }
 
         String hashedPassword;
+
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] hash = md.digest(password.getBytes(StandardCharsets.UTF_8));
@@ -68,7 +57,7 @@ public class CustomerLoginServlet extends HttpServlet {
                 } 
                 else {
                     req.setAttribute("error", "Invalid email or password.");
-                    req.getRequestDispatcher("/login.jsp").forward(req, res);
+                    req.getRequestDispatcher("/account/login/login.jsp").forward(req, res);
                 }
             }
 
@@ -80,6 +69,6 @@ public class CustomerLoginServlet extends HttpServlet {
     // GET just shows the login page.
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        req.getRequestDispatcher("/login.jsp").forward(req, res);
+        req.getRequestDispatcher("/account/login/login.jsp").forward(req, res);
     }
 }

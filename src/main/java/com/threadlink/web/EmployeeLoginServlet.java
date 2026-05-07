@@ -15,7 +15,7 @@ public class EmployeeLoginServlet extends HttpServlet {
     // Expects form field: "employeeID".
     // Checks Employees table, then determines Manager vs SalesAssociate sub-role.
     // On success: creates a session and redirects to /employee/home.
-    // On failure: forwards back to /employee/login.jsp with an "error" attribute.
+    // On failure: forwards back to the employee login JSP with an "error" attribute.
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
@@ -23,7 +23,7 @@ public class EmployeeLoginServlet extends HttpServlet {
 
         if (employeeID == null || employeeID.trim().isEmpty()) {
             req.setAttribute("error", "Employee ID is required.");
-            req.getRequestDispatcher("/employee/login.jsp").forward(req, res);
+            req.getRequestDispatcher("/employee/login/login.jsp").forward(req, res);
             return;
         }
 
@@ -39,7 +39,7 @@ public class EmployeeLoginServlet extends HttpServlet {
                 try (ResultSet rs = ps.executeQuery()) {
                     if (!rs.next()) {
                         req.setAttribute("error", "Employee ID not found.");
-                        req.getRequestDispatcher("/employee/login.jsp").forward(req, res);
+                        req.getRequestDispatcher("/employee/login/login.jsp").forward(req, res);
                         return;
                     }
                 }
@@ -68,6 +68,6 @@ public class EmployeeLoginServlet extends HttpServlet {
     // GET just shows the employee login page.
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        req.getRequestDispatcher("/employee/login.jsp").forward(req, res);
+        req.getRequestDispatcher("/employee/login/login.jsp").forward(req, res);
     }
 }

@@ -18,16 +18,10 @@
 <body>
 <div class="page-shell">
 
-    <nav class="site-nav">
-        <div class="brand">
-            <span class="brand-mark">ThreadLink</span>
-            <a class="brand-name" href="index.jsp">Modern Storefront</a>
-        </div>
-        <div class="nav-links">
-            <a class="nav-link" href="index.jsp">Home</a>
-            <a class="nav-link" href="search/index.jsp">Search</a>
-        </div>
-    </nav>
+    <%
+        request.setAttribute("navActive", "login");
+    %>
+    <jsp:include page="/WEB-INF/jsp/includes/site-nav.jsp" />
 
     <section class="login-panel">
         <div class="section-heading">
@@ -41,12 +35,12 @@
             <div class="login-copy">
                 <p>Welcome back. Enter your email and password to access your
                     account.</p>
-                <p>Don't have an account? <a href=" <%= request.getContextPath() %>/register.jsp">Create
+                <p>Don't have an account? <a href="<%= request.getContextPath() %>/account/register/register.jsp">Create
                     one here.</a></p>
             </div>
 
 
-            <form class="login-form" method="post" action="<%= request.getContextPath() %>/login">
+            <form class="login-form" method="post" action="<%= request.getContextPath() %>/account/login">
 
 
                 <% if (error != null) { %>

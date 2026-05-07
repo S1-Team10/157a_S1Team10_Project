@@ -10,20 +10,15 @@
 <html>
 <head>
     <title>ThreadLink | Employee Login</title>
-    <link rel="stylesheet" href="../assets/css/home.css">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/home.css">
 </head>
 <body>
 <div class="page-shell">
 
-    <nav class="site-nav">
-        <div class="brand">
-            <span class="brand-mark">ThreadLink</span>
-            <a class="brand-name" href="../index.jsp">Modern Storefront</a>
-        </div>
-        <div class="nav-links">
-            <a class="nav-link" href="../index.jsp">Home</a>
-        </div>
-    </nav>
+    <%
+        request.setAttribute("navActive", "login");
+    %>
+    <jsp:include page="/WEB-INF/jsp/includes/site-nav.jsp" />
 
     <section class="login-panel">
         <div class="section-heading">
