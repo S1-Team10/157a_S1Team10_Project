@@ -1,8 +1,10 @@
 package com.threadlink.web;
 
+import com.threadlink.auth.SessionUtil;
+import com.threadlink.db.DB;
+import com.threadlink.db.Role;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,11 +16,11 @@ import javax.servlet.http.HttpSession;
 
 public class RewardsServlet extends HttpServlet {
 
-  private static final String UPDATE_SQL =
-    "UPDATE Customers SET isSubscribed = ? WHERE customerID = ?";
-
   private static final String SELECT_SQL =
-    "SELECT isSubscribed FROM Customers WHERE customerID = ?";
+    "SELECT isSubscribed FROM Customers WHERE email = ?";
+
+  private static final String UPDATE_SQL =
+    "UPDATE Customers SET isSubscribed = ? WHERE email = ?";
 
   // ── GET: render the rewards page ─────────────────────────────────────────
   @Override
@@ -29,35 +31,21 @@ public class RewardsServlet extends HttpServlet {
     response.setCharacterEncoding("UTF-8");
 
     HttpSession session = request.getSession(false);
-    Integer customerId  = (session != null) ? (Integer) session.getAttribute("customerId") : null;
+    String userEmail = SessionUtil.getUserEmail(session);
 
-    if (customerId == null) {
-      // Not logged in — forward to JSP which will show the login prompt
+    if (userEmail == null) {
       request.setAttribute("loggedIn", false);
       request.getRequestDispatcher("/rewards/index.jsp").forward(request, response);
       return;
     }
 
-    // Logged in — look up current subscription status
-    String db       = getServletContext().getInitParameter("DB_NAME");
-    String user     = getServletContext().getInitParameter("DB_USER");
-    String password = getServletContext().getInitParameter("DB_PASSWORD");
-
-    if (db == null || user == null || password == null) {
-      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-        "Database config is missing. Set DB_NAME, DB_USER, and DB_PASSWORD as app init params.");
-      return;
-    }
-
-    try {
-      boolean isSubscribed = fetchSubscriptionStatus(db, user, password, customerId);
-      request.setAttribute("loggedIn",      true);
-      request.setAttribute("customerId",    customerId);
-      request.setAttribute("isSubscribed",  isSubscribed);
-    } catch (Exception e) {
-      request.setAttribute("loggedIn",   true);
-      request.setAttribute("customerId", customerId);
-      request.setAttribute("dbError",    sanitizeMessage(e));
+    try (Connection conn = DB.get(Role.CUSTOMER, getServletContext())) {
+      boolean isSubscribed = fetchSubscriptionStatus(conn, userEmail);
+      request.setAttribute("loggedIn",     true);
+      request.setAttribute("isSubscribed", isSubscribed);
+    } catch (SQLException e) {
+      request.setAttribute("loggedIn", true);
+      request.setAttribute("dbError",  sanitizeMessage(e));
     }
 
     request.getRequestDispatcher("/rewards/index.jsp").forward(request, response);
@@ -69,89 +57,50 @@ public class RewardsServlet extends HttpServlet {
       throws ServletException, IOException {
 
     HttpSession session = request.getSession(false);
-    Integer customerId  = (session != null) ? (Integer) session.getAttribute("customerId") : null;
+    String userEmail = SessionUtil.getUserEmail(session);
 
-    if (customerId == null) {
+    if (userEmail == null) {
       response.sendRedirect(request.getContextPath() + "/rewards");
       return;
     }
 
-    String action = request.getParameter("action"); // "subscribe" or "cancel"
+    String action = request.getParameter("action");
     boolean subscribe = "subscribe".equals(action);
 
-    String db       = getServletContext().getInitParameter("DB_NAME");
-    String user     = getServletContext().getInitParameter("DB_USER");
-    String password = getServletContext().getInitParameter("DB_PASSWORD");
-
-    if (db == null || user == null || password == null) {
-      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-        "Database config is missing.");
-      return;
-    }
-
-    try {
-      updateSubscription(db, user, password, customerId, subscribe);
+    try (Connection conn = DB.get(Role.CUSTOMER, getServletContext())) {
+      updateSubscription(conn, userEmail, subscribe);
       // PRG pattern — redirect to GET so refresh doesn't resubmit
       response.sendRedirect(
         request.getContextPath() + "/rewards?success=" + (subscribe ? "subscribed" : "cancelled")
       );
-    } catch (Exception e) {
-      request.setAttribute("loggedIn",      true);
-      request.setAttribute("customerId",    customerId);
-      request.setAttribute("isSubscribed",  subscribe); // optimistic fallback
-      request.setAttribute("dbError",       sanitizeMessage(e));
+    } catch (SQLException e) {
+      request.setAttribute("loggedIn",     true);
+      request.setAttribute("isSubscribed", subscribe);
+      request.setAttribute("dbError",      sanitizeMessage(e));
       request.getRequestDispatcher("/rewards/index.jsp").forward(request, response);
     }
   }
 
   // ── DB helpers ─────────────────────────────────────────────────────────────
-  private boolean fetchSubscriptionStatus(
-      String db, String user, String password, int customerId)
-      throws SQLException, ClassNotFoundException {
-
-    Class.forName("com.mysql.cj.jdbc.Driver");
-    String url = buildUrl(db);
-
-    try (
-      Connection con = DriverManager.getConnection(url, user, password);
-      PreparedStatement ps = con.prepareStatement(SELECT_SQL)
-    ) {
-      ps.setInt(1, customerId);
+  private boolean fetchSubscriptionStatus(Connection conn, String email) throws SQLException {
+    try (PreparedStatement ps = conn.prepareStatement(SELECT_SQL)) {
+      ps.setString(1, email);
       try (ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) {
-          return rs.getBoolean("isSubscribed");
-        }
+        return rs.next() && rs.getBoolean("isSubscribed");
       }
     }
-    return false;
   }
 
-  private void updateSubscription(
-      String db, String user, String password, int customerId, boolean subscribe)
-      throws SQLException, ClassNotFoundException {
-
-    Class.forName("com.mysql.cj.jdbc.Driver");
-    String url = buildUrl(db);
-
-    try (
-      Connection con = DriverManager.getConnection(url, user, password);
-      PreparedStatement ps = con.prepareStatement(UPDATE_SQL)
-    ) {
+  private void updateSubscription(Connection conn, String email, boolean subscribe)
+      throws SQLException {
+    try (PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
       ps.setBoolean(1, subscribe);
-      ps.setInt(2, customerId);
+      ps.setString(2, email);
       ps.executeUpdate();
     }
   }
 
-  private String buildUrl(String db) {
-    return "jdbc:mysql://localhost:3306/" + db + "?autoReconnect=true&useSSL=false";
-  }
-
   private String sanitizeMessage(Exception e) {
-    if (e instanceof ClassNotFoundException) {
-      return "MySQL JDBC driver not found.";
-    }
-    // Don't expose raw SQL errors to the view
     return "A database error occurred. Please try again later.";
   }
 }

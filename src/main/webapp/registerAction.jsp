@@ -1,5 +1,6 @@
 <%@ page import="java.sql.*, java.security.MessageDigest" %>
 <%@ page import="java.nio.charset.StandardCharsets" %>
+<%@ page import="com.threadlink.db.DB, com.threadlink.db.Role" %>
 
 
 <%
@@ -60,15 +61,8 @@
 
   // CONNECTION TO THE DATABASE
 
-  String db = application.getInitParameter("DB_NAME");
-  String dbUser = application.getInitParameter("DB_CUSTOMER_USER");
-  String dbPassword = application.getInitParameter("DB_CUSTOMER_PASSWORD");
-
   try {
-    Class.forName("com.mysql.cj.jdbc.Driver");
-    Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + db + "?autoReconnect=true&useSSL=false",
-    dbUser, dbPassword
-    );
+    Connection connection = DB.get(Role.CUSTOMER, application);
 
     // CHECK IF THE EMAIL EXISTS
     PreparedStatement check = connection.prepareStatement(

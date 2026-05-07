@@ -1,4 +1,4 @@
-package com.threadlink.servlet;
+package com.threadlink.web;
 
 import com.threadlink.auth.SessionUtil;
 

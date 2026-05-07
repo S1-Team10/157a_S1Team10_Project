@@ -1,4 +1,4 @@
-package com.threadlink.servlet;
+package com.threadlink.web;
 
 import com.threadlink.auth.SessionUtil;
 import com.threadlink.db.DB;
@@ -37,6 +37,17 @@ public class CustomerLoginServlet extends HttpServlet {
             for (byte b : hash) {
                 sb.append(String.format("%02x", b));
             }
+            hashedPassword = sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new ServletException("SHA-256 not available.", e);
+        }
+
+        String hashedPassword;
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(password.getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hash) sb.append(String.format("%02x", b));
             hashedPassword = sb.toString();
         } catch (NoSuchAlgorithmException e) {
             throw new ServletException("SHA-256 not available.", e);

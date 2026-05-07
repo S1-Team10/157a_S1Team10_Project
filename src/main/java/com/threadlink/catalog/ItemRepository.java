@@ -1,7 +1,6 @@
 package com.threadlink.catalog;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,18 +14,11 @@ public class ItemRepository {
     "WHERE itemName LIKE ? OR description LIKE ? " +
     "ORDER BY itemName";
 
-  public List<Item> searchItems(String dbName, String user, String password, String query)
-      throws SQLException, ClassNotFoundException {
-    Class.forName("com.mysql.cj.jdbc.Driver");
-
-    String url = "jdbc:mysql://localhost:3306/" + dbName + "?autoReconnect=true&useSSL=false";
+  public List<Item> searchItems(Connection conn, String query) throws SQLException {
     String searchTerm = "%" + normalizeQuery(query) + "%";
-    List<Item> items = new ArrayList<Item>();
+    List<Item> items = new ArrayList<>();
 
-    try (
-      Connection con = DriverManager.getConnection(url, user, password);
-      PreparedStatement ps = con.prepareStatement(SEARCH_SQL)
-    ) {
+    try (PreparedStatement ps = conn.prepareStatement(SEARCH_SQL)) {
       ps.setString(1, searchTerm);
       ps.setString(2, searchTerm);
 

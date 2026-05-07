@@ -2,8 +2,11 @@ package com.threadlink.web;
 
 import com.threadlink.catalog.Item;
 import com.threadlink.catalog.ItemRepository;
+import com.threadlink.db.DB;
+import com.threadlink.db.Role;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -20,30 +23,16 @@ public class CatalogApiServlet extends HttpServlet {
     response.setCharacterEncoding("UTF-8");
 
     String query = request.getParameter("q");
-    if (query == null) {
-      query = "";
-    }
+    if (query == null) query = "";
 
-    String db = getServletContext().getInitParameter("DB_NAME");
-    String user = getServletContext().getInitParameter("DB_USER");
-    String password = getServletContext().getInitParameter("DB_PASSWORD");
-
-    try (PrintWriter out = response.getWriter()) {
-      if (db == null || user == null || password == null) {
-        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        out.write("{\"error\":\"Database config is missing. Set `DB_NAME`, `DB_USER`, and `DB_PASSWORD` as app init params.\"}");
-        return;
-      }
-
-      try {
-        List<Item> items = itemRepository.searchItems(db, user, password, query);
-        out.write(toJson(items));
-      } catch (Exception e) {
-        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        out.write("{\"error\":\"" + JsonUtils.escape(e instanceof ClassNotFoundException
-          ? "MySQL JDBC driver not found."
-          : "Database error: " + e.getMessage()) + "\"}");
-      }
+    try (Connection conn = DB.get(Role.CUSTOMER, getServletContext())) {
+      List<Item> items = itemRepository.searchItems(conn, query);
+      response.getWriter().write(toJson(items));
+    } catch (SQLException e) {
+      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      response.getWriter().write(
+        "{\"error\":\"" + JsonUtils.escape("Database error: " + e.getMessage()) + "\"}"
+      );
     }
   }
 

@@ -58,8 +58,8 @@
   <!-- Servlets -->
 
   <servlet>
-    <servlet-name>RewardsServlet</servlet-name>
-    <servlet-class>com.threadlink.web.RewardsServlet</servlet-class>
+    <servlet-name>CustomerLoginServlet</servlet-name>
+    <servlet-class>com.threadlink.web.CustomerLoginServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -69,7 +69,7 @@
 
   <servlet>
     <servlet-name>EmployeeLoginServlet</servlet-name>
-    <servlet-class>com.threadlink.servlet.EmployeeLoginServlet</servlet-class>
+    <servlet-class>com.threadlink.web.EmployeeLoginServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>EmployeeLoginServlet</servlet-name>
@@ -78,7 +78,7 @@
 
   <servlet>
     <servlet-name>LogoutServlet</servlet-name>
-    <servlet-class>com.threadlink.servlet.LogoutServlet</servlet-class>
+    <servlet-class>com.threadlink.web.LogoutServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>LogoutServlet</servlet-name>
