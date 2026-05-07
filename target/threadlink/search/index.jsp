@@ -43,6 +43,7 @@
         <div class="nav-links">
           <a class="nav-link" href="../index.jsp#featured">Featured</a>
           <a class="nav-link is-active" href=".">Search</a>
+          <a class="nav-link" href="../rewards/index.jsp">Rewards</a>
           <a class="nav-link login-link" href="../index.jsp#login">Log In</a>
         </div>
       </nav>
