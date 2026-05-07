@@ -26,7 +26,7 @@ public class DB {
         String user = ctx.getInitParameter("DB_" + prefix + "_USER");
         String pwd = ctx.getInitParameter("DB_" + prefix + "_PASSWORD");
 
-        String url = "jdbc:mysql://localhost:3306/" + db + "?useSSL=false";
+        String url = "jdbc:mysql://localhost:3306/" + db + "?useSSL=false&allowPublicKeyRetrieval=true";
         return DriverManager.getConnection(url, user, pwd);
     }
 }
