@@ -14,27 +14,11 @@
     %>
 
     <div class="page-shell">
-      <nav class="site-nav">
-        <div class="brand">
-          <span class="brand-mark">ThreadLink</span>
-          <a class="brand-name" href="index.jsp">Modern Storefront</a>
-        </div>
-        <form class="nav-search" method="get" action="search/index.jsp">
-          <input
-            class="nav-search-input"
-            name="q"
-            type="text"
-            value="<%= HtmlUtils.escape(q) %>"
-            placeholder="Search the catalog"
-          >
-          <button class="button button-primary nav-search-button" type="submit">Search</button>
-        </form>
-        <div class="nav-links">
-          <a class="nav-link" href="#featured">Featured</a>
-          <a class="nav-link" href="search/index.jsp">Search</a>
-          <a class="nav-link login-link" href="#login">Log In</a>
-        </div>
-      </nav>
+      <%
+        request.setAttribute("navActive", "featured");
+        request.setAttribute("navShowSearch", Boolean.TRUE);
+      %>
+      <jsp:include page="/WEB-INF/jsp/includes/site-nav.jsp" />
 
       <section class="hero" id="featured">
         <div class="hero-panel">
@@ -45,12 +29,6 @@
           </p>
           <div class="hero-actions">
             <a class="button button-primary" href="search/index.jsp">Browse Products</a>
-            <a class="button button-secondary" href="#login">Account Access</a>
-          </div>
-          <div class="pill-row">
-            <span class="pill">Fresh arrivals</span>
-            <span class="pill">Everyday staples</span>
-            <span class="pill">Easy search</span>
           </div>
         </div>
 
@@ -65,41 +43,9 @@
           </div>
           <div class="feature-card">
             <h3>Customer Access</h3>
-            <p>A dedicated navigation link points users to a login section for account access, without adding account-creation functionality.</p>
+            <p>A dedicated navigation link points users to the account login page when they need account access.</p>
           </div>
         </aside>
-      </section>
-
-      <section class="login-panel" id="login">
-        <div class="section-heading">
-          <div>
-            <span class="eyebrow">Account Access</span>
-            <h2>Log in to your account</h2>
-          </div>
-          <p>Navigation now includes a dedicated login link for returning shoppers.</p>
-        </div>
-
-        <div class="login-layout">
-          <div class="login-copy">
-            <p>
-              This landing page now behaves more like a store homepage, with product discovery up front and a clear account-access entry point in the navigation bar.
-            </p>
-            <p>
-              The section below is presentation-only and does not create new accounts. It gives users a familiar place to sign in once login functionality is wired up later.
-            </p>
-            <div class="pill-row">
-              <span class="pill">Returning customers</span>
-              <span class="pill">No account creation added</span>
-              <span class="pill">Ready for future backend hookup</span>
-            </div>
-          </div>
-
-          <form class="login-form" method="post" action="<%= request.getContextPath() %>/login">
-            <input class="login-input" type="email" name="email" placeholder="Email address">
-            <input class="login-input" type="password" name="password" placeholder="Password">
-            <button class="button button-primary" type="submit">Log In</button>
-          </form>
-        </div>
       </section>
     </div>
   </body>

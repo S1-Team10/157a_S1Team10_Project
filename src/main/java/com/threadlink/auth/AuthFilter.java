@@ -6,9 +6,6 @@ import javax.servlet.http.*;
 import java.io.IOException;
 
 public class AuthFilter implements Filter {
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-    }
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {}
@@ -31,7 +28,7 @@ public class AuthFilter implements Filter {
         if (role == null) {
             String loginPage = path.startsWith("/employee/") || path.startsWith("/manager/")
                 ? req.getContextPath() + "/employee/login"
-                : req.getContextPath() + "/login";
+                : req.getContextPath() + "/account/login";
             res.sendRedirect(loginPage);
             return;
         }
@@ -56,20 +53,24 @@ public class AuthFilter implements Filter {
 
         chain.doFilter(request, response);
     }
-    @Override
-    public void destroy() {
-    }
 
     @Override
     public void destroy() {}
 
     private boolean isPublic(String path) {
         return path.equals("/")
-            || path.equals("/login")
+            || path.equals("/index.jsp")
+            || path.equals("/account/login")
             || path.equals("/employee/login")
             || path.equals("/logout")
-            || path.equals("/register.jsp")
-            || path.equals("/registerAction.jsp")
+            || path.equals("/rewards")
+            || path.equals("/rewards/")
+            || path.equals("/rewards/index.jsp")
+            || path.equals("/api/items")
+            || path.equals("/search")
+            || path.equals("/search/")
+            || path.startsWith("/search/")
+            || path.startsWith("/account/register/")
             || path.startsWith("/assets/")
             || path.startsWith("/js/")
             || path.startsWith("/img/");

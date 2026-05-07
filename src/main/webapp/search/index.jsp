@@ -1,4 +1,6 @@
 <%@ page import="com.threadlink.web.HtmlUtils" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -17,36 +19,12 @@
     %>
 
     <div class="page-shell">
-      <nav class="site-nav">
-        <div class="brand">
-          <span class="brand-mark">ThreadLink</span>
-          <a class="brand-name" href="../index.jsp">Modern Storefront</a>
-        </div>
-        <form
-          class="nav-search"
-          method="get"
-          action="."
-          data-catalog-form
-          data-api-url="<%= request.getContextPath() %>/api/items"
-        >
-          <input
-            class="nav-search-input"
-            id="q"
-            name="q"
-            type="text"
-            data-search-input
-            value="<%= HtmlUtils.escape(q) %>"
-            placeholder="Search by name or description"
-          >
-          <button class="button button-primary nav-search-button" type="submit">Search</button>
-        </form>
-        <div class="nav-links">
-          <a class="nav-link" href="../index.jsp#featured">Featured</a>
-          <a class="nav-link is-active" href=".">Search</a>
-          <a class="nav-link" href="../rewards/index.jsp">Rewards</a>
-          <a class="nav-link login-link" href="../index.jsp#login">Log In</a>
-        </div>
-      </nav>
+      <%
+        request.setAttribute("navActive", "search");
+        request.setAttribute("navShowSearch", Boolean.TRUE);
+        request.setAttribute("navCatalogForm", Boolean.TRUE);
+      %>
+      <jsp:include page="/WEB-INF/jsp/includes/site-nav.jsp" />
 
       <section
         class="catalog-page"
@@ -57,9 +35,6 @@
           <div>
             <span class="eyebrow">Search Results</span>
             <h1 class="catalog-title">Browse matching items</h1>
-            <p class="catalog-copy">
-              Every search stays anchored in the navbar. Select a product in the table to review its details before future cart integration is added.
-            </p>
           </div>
         </div>
 

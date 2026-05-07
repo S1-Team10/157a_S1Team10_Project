@@ -6,8 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ThreadLink | Rewards Program</title>
-    <link rel="stylesheet" href="../assets/css/home.css">
-    <link rel="stylesheet" href="../assets/css/rewards.css">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/home.css">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/rewards.css">
   </head>
   <body>
     <%
@@ -21,18 +21,11 @@
     %>
 
     <div class="page-shell">
-      <nav class="site-nav">
-        <div class="brand">
-          <span class="brand-mark">ThreadLink</span>
-          <a class="brand-name" href="../index.jsp">Modern Storefront</a>
-        </div>
-        <div class="nav-links">
-          <a class="nav-link" href="../index.jsp#featured">Featured</a>
-          <a class="nav-link" href="../search/index.jsp">Search</a>
-          <a class="nav-link is-active" href=".">Rewards</a>
-          <a class="nav-link login-link" href="../index.jsp#login">Log In</a>
-        </div>
-      </nav>
+      <%
+        request.setAttribute("navActive", "featured");
+        request.setAttribute("navShowSearch", Boolean.TRUE);
+      %>
+      <jsp:include page="/WEB-INF/jsp/includes/site-nav.jsp" />
 
       <main class="rewards-page">
 
@@ -110,8 +103,8 @@
                   Please log in or create an account to continue.
                 </p>
                 <div class="rewards-actions">
-                  <a class="button button-primary" href="../index.jsp#login">Log In</a>
-                  <a class="button button-secondary" href="../index.jsp#login">Create Account</a>
+                  <a class="button button-primary" href="<%= request.getContextPath() %>/account/login">Log In</a>
+                  <a class="button button-secondary" href="<%= request.getContextPath() %>/account/register/register.jsp">Create Account</a>
                 </div>
                 <p class="login-note">
                   Already a rewards member? Log in to manage your membership.
