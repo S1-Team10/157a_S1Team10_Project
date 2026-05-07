@@ -8,6 +8,9 @@ import java.io.IOException;
 public class AuthFilter implements Filter {
 
     @Override
+    public void init(FilterConfig filterConfig) throws ServletException {}
+
+    @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         HttpServletRequest req = (HttpServletRequest) request;
@@ -51,12 +54,17 @@ public class AuthFilter implements Filter {
         chain.doFilter(request, response);
     }
 
+    @Override
+    public void destroy() {}
+
     private boolean isPublic(String path) {
         return path.equals("/")
             || path.equals("/login")
             || path.equals("/employee/login")
             || path.equals("/logout")
-            || path.startsWith("/css/")
+            || path.equals("/register.jsp")
+            || path.equals("/registerAction.jsp")
+            || path.startsWith("/assets/")
             || path.startsWith("/js/")
             || path.startsWith("/img/");
     }
