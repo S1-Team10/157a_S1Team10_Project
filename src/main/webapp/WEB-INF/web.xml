@@ -7,6 +7,10 @@
 
   <display-name>ThreadLink</display-name>
 
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+
 
   <!-- Database credentials -->
 
@@ -51,7 +55,10 @@
   </filter>
   <filter-mapping>
     <filter-name>AuthFilter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/account/*</url-pattern>
+    <url-pattern>/customer/*</url-pattern>
+    <url-pattern>/employee/*</url-pattern>
+    <url-pattern>/manager/*</url-pattern>
   </filter-mapping>
 
 
@@ -61,10 +68,18 @@
     <servlet-name>CustomerLoginServlet</servlet-name>
     <servlet-class>com.threadlink.web.CustomerLoginServlet</servlet-class>
   </servlet>
-
   <servlet-mapping>
-    <servlet-name>RewardsServlet</servlet-name>
-    <url-pattern>/rewards</url-pattern>
+    <servlet-name>CustomerLoginServlet</servlet-name>
+    <url-pattern>/account/login</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>CustomerHomeServlet</servlet-name>
+    <servlet-class>com.threadlink.web.CustomerHomeServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CustomerHomeServlet</servlet-name>
+    <url-pattern>/customer/home</url-pattern>
   </servlet-mapping>
 
   <servlet>
