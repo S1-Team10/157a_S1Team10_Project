@@ -70,11 +70,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>CustomerLoginServlet</servlet-name>
-<<<<<<< HEAD
     <url-pattern>/account/login</url-pattern>
-=======
-    <url-pattern>/login</url-pattern>
->>>>>>> a05ef76 (added employee/home and deleted auth/)
   </servlet-mapping>
 
   <servlet>
