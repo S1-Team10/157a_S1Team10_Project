@@ -30,7 +30,7 @@
         <div class="login-layout">
             <div class="login-copy">
                 <p>Join ThreadLink to access your orders, earn rewards, and shop faster.</p>
-                <p>Already have an account? <a href="../login/login.jsp">Log in here.</a></p>
+                <p>Already have an account? <a href="<%= request.getContextPath() %>/account/login">Log in here.</a></p>
             </div>
 
             <form class="login-form" method="post" action="registerAction.jsp">
