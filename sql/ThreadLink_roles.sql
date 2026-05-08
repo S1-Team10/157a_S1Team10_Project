@@ -1,9 +1,9 @@
 ------ setup ------
-CREATE ROLE 'customer', 'sales_associate', 'manager';
+CREATE ROLE IF NOT EXISTS 'customer', 'sales_associate', 'manager';
 
-CREATE USER 'customer_app'@'localhost' IDENTIFIED BY 'customer_password';
-CREATE USER 'sales_app'@'localhost' IDENTIFIED BY 'sales_password';
-CREATE USER 'manager_app'@'localhost' IDENTIFIED BY 'manager_password';
+CREATE USER IF NOT EXISTS 'customer_app'@'localhost' IDENTIFIED BY 'customer_password';
+CREATE USER IF NOT EXISTS 'sales_app'@'localhost' IDENTIFIED BY 'sales_password';
+CREATE USER IF NOT EXISTS 'manager_app'@'localhost' IDENTIFIED BY 'manager_password';
 
 GRANT 'customer' TO 'customer_app'@'localhost';
 GRANT 'sales_associate' TO 'sales_app'@'localhost';
