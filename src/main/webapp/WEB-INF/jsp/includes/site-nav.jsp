@@ -44,7 +44,6 @@
   <% } %>
 
   <div class="nav-links">
-    <a class="nav-link<%= "featured".equals(navActive) ? " is-active" : "" %>" href="<%= contextPath %>/#featured">Featured</a>
     <a class="nav-link<%= "rewards".equals(navActive) ? " is-active" : "" %>" href="<%= contextPath %>/rewards">Rewards</a>
     <a class="nav-link login-link<%= "login".equals(navActive) ? " is-active" : "" %>" href="<%= contextPath %>/account/login">Log In</a>
   </div>
