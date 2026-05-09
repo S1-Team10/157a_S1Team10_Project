@@ -30,6 +30,8 @@
         class="catalog-page"
         data-catalog-page
         data-selected-item-id="<%= HtmlUtils.escape(itemId) %>"
+        data-order-url="<%= request.getContextPath() %>/customer/orders"
+        data-login-url="<%= request.getContextPath() %>/account/login"
       >
         <div class="catalog-page-header">
           <div>
@@ -82,8 +84,33 @@
                 </div>
               </div>
 
-              <button class="button button-primary detail-cart-button" type="button">
+              <button class="button button-primary detail-cart-button" type="button" data-add-to-cart>
                 Add to Cart
+              </button>
+            </div>
+
+            <div class="cart-panel" data-cart-panel>
+              <div class="cart-panel-header">
+                <div>
+                  <span class="detail-kicker">Cart</span>
+                  <h2>Your order</h2>
+                </div>
+                <button class="cart-clear-button" type="button" data-cart-clear>Clear</button>
+              </div>
+
+              <p class="item-detail-empty" data-cart-empty>Your cart is empty.</p>
+              <ul class="cart-list" data-cart-list></ul>
+
+              <div class="cart-total" data-cart-total-row hidden>
+                <span>Total</span>
+                <strong data-cart-total>$0.00</strong>
+              </div>
+
+              <p class="message" data-order-status hidden></p>
+              <p class="message error" data-order-error hidden></p>
+
+              <button class="button button-primary detail-cart-button" type="button" data-place-order disabled>
+                Place Order
               </button>
             </div>
           </aside>
