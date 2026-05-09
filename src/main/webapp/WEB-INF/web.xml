@@ -119,6 +119,15 @@
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>CustomerOrderServlet</servlet-name>
+    <servlet-class>com.threadlink.web.CustomerOrderServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CustomerOrderServlet</servlet-name>
+    <url-pattern>/customer/orders</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>RewardsServlet</servlet-name>
     <servlet-class>com.threadlink.web.RewardsServlet</servlet-class>
   </servlet>
