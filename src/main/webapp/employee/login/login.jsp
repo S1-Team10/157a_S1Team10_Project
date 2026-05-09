@@ -1,6 +1,8 @@
-<%@ page import="com.threadlink.auth.SessionUtil" %>
+<%@ page import="com.threadlink.auth.SessionUtil, com.threadlink.db.Role" %>
 <%
-    if (SessionUtil.isLoggedIn(request.getSession(false))) {
+    Role currentRole = SessionUtil.getRole(request.getSession(false));
+
+    if (currentRole == Role.SALES_ASSOCIATE || currentRole == Role.MANAGER) {
         response.sendRedirect(request.getContextPath() + "/employee/home");
         return;
     }

@@ -1,7 +1,9 @@
-<%@ page import="com.threadlink.auth.SessionUtil" %>
+<%@ page import="com.threadlink.auth.SessionUtil, com.threadlink.db.Role" %>
 <%
-    // If already logged in, skip the login page entirely
-    if (SessionUtil.isLoggedIn(request.getSession(false))) {
+    Role currentRole = SessionUtil.getRole(request.getSession(false));
+
+    // If already logged in as a customer, skip the customer login page.
+    if (currentRole == Role.CUSTOMER) {
         response.sendRedirect(request.getContextPath() + "/customer/home");
         return;
     }
