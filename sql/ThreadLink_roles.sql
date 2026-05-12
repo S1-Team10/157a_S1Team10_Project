@@ -53,11 +53,17 @@ GRANT UPDATE (minStock, maxStock) ON ThreadLink.Items TO 'sales_associate';
 GRANT 'sales_associate' TO 'manager';
 
 -- controls item inventory --
+GRANT SELECT ON ThreadLink.Discounts TO 'manager';
+GRANT SELECT ON ThreadLink.Customers TO 'manager';
+GRANT SELECT ON ThreadLink.CustomerDiscounts TO 'manager';
+GRANT SELECT ON ThreadLink.EmployeeDiscounts TO 'manager';
+GRANT SELECT ON ThreadLink.UpdatesItem TO 'manager';
+GRANT SELECT ON ThreadLink.UpdatesDiscount TO 'manager';
 GRANT INSERT, UPDATE, DELETE ON ThreadLink.Items TO 'manager';
 GRANT INSERT, DELETE ON ThreadLink.UpdatesItem TO 'manager';
 GRANT INSERT ON ThreadLink.Orders TO 'manager';
 GRANT INSERT ON ThreadLink.OrderItems TO 'manager';
-GRANT INSERT ON ThreadLink.EmployeePlaces TO 'manager';
+GRANT SELECT, INSERT, DELETE ON ThreadLink.EmployeePlaces TO 'manager';
 
 -- employee management --
 GRANT INSERT, UPDATE, DELETE ON ThreadLink.Employees TO 'manager';

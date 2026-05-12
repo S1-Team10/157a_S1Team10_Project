@@ -21,6 +21,8 @@
   String accountHref = contextPath + "/account/login";
   if (currentRole == Role.CUSTOMER) {
     accountHref = contextPath + "/customer/home";
+  } else if (currentRole == Role.MANAGER) {
+    accountHref = contextPath + "/manager/home";
   } else if (currentRole == Role.SALES_ASSOCIATE || currentRole == Role.MANAGER) {
     accountHref = contextPath + "/employee/home";
   }

@@ -21,6 +21,9 @@
         </div>
         <div class="nav-links">
             <a class="nav-link" href="../index.jsp">Home</a>
+            <% if ("Manager".equals(request.getAttribute("role"))) { %>
+                <a class="nav-link" href="<%= request.getContextPath() %>/manager/home">Manager Dashboard</a>
+            <% } %>
             <a class="nav-link" href="<%= request.getContextPath() %>/logout">Log Out</a>
         </div>
     </nav>

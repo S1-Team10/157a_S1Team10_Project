@@ -58,7 +58,11 @@ public class EmployeeLoginServlet extends HttpServlet {
 
             HttpSession session = req.getSession(true);
             SessionUtil.loginEmployee(session, employeeID, role);
-            res.sendRedirect(req.getContextPath() + "/employee/home");
+            if (role == Role.MANAGER) {
+                res.sendRedirect(req.getContextPath() + "/manager/home");
+            } else {
+                res.sendRedirect(req.getContextPath() + "/employee/home");
+            }
 
         } catch (SQLException e) {
             throw new ServletException("Database error during employee login.", e);
