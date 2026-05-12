@@ -14,7 +14,7 @@
 
 <html>
 <head>
-    <title>ThreadLink | Log In</title>
+    <title>ThreadLink | Customer Log In</title>
     <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/home.css">
 </head>
 <body>

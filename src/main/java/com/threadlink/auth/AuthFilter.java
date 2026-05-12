@@ -60,10 +60,9 @@ public class AuthFilter implements Filter {
     private boolean isPublic(String path) {
         return path.equals("/")
             || path.equals("/index.jsp")
-            || path.equals("/account/login")
-            || path.equals("/account/login/login.jsp")
-            || path.equals("/employee/login")
-            || path.equals("/employee/login/login.jsp")
+            || path.equals("/login")
+            || path.equals("/login/customer_login.jsp")
+            || path.equals("/login/employee_login.jsp")
             || path.equals("/logout")
             || path.equals("/rewards")
             || path.equals("/rewards/")

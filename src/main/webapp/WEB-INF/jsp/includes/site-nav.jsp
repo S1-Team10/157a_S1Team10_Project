@@ -18,7 +18,7 @@
 
   Role currentRole = SessionUtil.getRole(request.getSession(false));
   boolean isLoggedIn = currentRole != null;
-  String accountHref = contextPath + "/account/login";
+  String accountHref = contextPath + "/login";
   if (currentRole == Role.CUSTOMER) {
     accountHref = contextPath + "/customer/home";
   } else if (currentRole == Role.MANAGER) {
