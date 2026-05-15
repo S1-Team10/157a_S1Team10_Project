@@ -217,6 +217,18 @@
         <input class="login-input" list="discountCodes" name="discountCode" placeholder="Discount code" required>
         <button class="button button-secondary" type="submit">Remove Discount</button>
       </form>
+
+      <form class="login-form" method="post" action="<%= contextPath %>/manager/home">
+        <input type="hidden" name="action" value="assignBulkDiscount">
+        <h3>Give Discount to Group</h3>
+        <select class="login-input" name="targetGroup" required>
+          <option value="customers">All customers</option>
+          <option value="employees">All employees</option>
+          <option value="everyone">All customers and employees</option>
+        </select>
+        <input class="login-input" list="discountCodes" name="discountCode" placeholder="Discount code" required>
+        <button class="button button-primary" type="submit">Apply Discount</button>
+      </form>
     </div>
 
     <datalist id="discountTargets">
@@ -266,5 +278,23 @@
     </div>
   </section>
 </div>
+<script>
+  (function () {
+    var scrollKey = "threadlink.manager.scrollY";
+    var savedY = sessionStorage.getItem(scrollKey);
+    if (savedY !== null) {
+      sessionStorage.removeItem(scrollKey);
+      requestAnimationFrame(function () {
+        window.scrollTo(0, parseInt(savedY, 10) || 0);
+      });
+    }
+
+    document.querySelectorAll("form[action$='/manager/home']").forEach(function (form) {
+      form.addEventListener("submit", function () {
+        sessionStorage.setItem(scrollKey, String(window.scrollY));
+      });
+    });
+  }());
+</script>
 </body>
 </html>

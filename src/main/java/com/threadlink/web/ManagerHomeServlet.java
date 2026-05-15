@@ -81,6 +81,9 @@ public class ManagerHomeServlet extends HttpServlet {
       } else if ("assignDiscount".equals(action)) {
         assignDiscount(conn, req, managerID);
         flash(req, "managerSuccess", "Discount assigned.");
+      } else if ("assignBulkDiscount".equals(action)) {
+        assignBulkDiscount(conn, req, managerID);
+        flash(req, "managerSuccess", "Discount applied to the selected group.");
       } else if ("revokeDiscount".equals(action)) {
         revokeDiscount(conn, req, managerID);
         flash(req, "managerSuccess", "Discount removed.");
@@ -166,8 +169,11 @@ public class ManagerHomeServlet extends HttpServlet {
 
     boolean oldAutoCommit = conn.getAutoCommit();
     conn.setAutoCommit(false);
-    try (PreparedStatement audit = conn.prepareStatement("DELETE FROM UpdatesItem WHERE itemID = ?");
+    try (PreparedStatement orderItems = conn.prepareStatement("DELETE FROM OrderItems WHERE itemID = ?");
+         PreparedStatement audit = conn.prepareStatement("DELETE FROM UpdatesItem WHERE itemID = ?");
          PreparedStatement item = conn.prepareStatement("DELETE FROM Items WHERE itemID = ?")) {
+      orderItems.setInt(1, itemID);
+      orderItems.executeUpdate();
       audit.setInt(1, itemID);
       audit.executeUpdate();
       item.setInt(1, itemID);
@@ -262,8 +268,10 @@ public class ManagerHomeServlet extends HttpServlet {
     conn.setAutoCommit(false);
     try {
       deleteWhere(conn, "DELETE FROM EmployeeDiscounts WHERE employeeID = ?", employeeID);
+      deleteWhere(conn, "DELETE FROM EmployeePlaces WHERE employeeID = ?", employeeID);
       deleteWhere(conn, "DELETE FROM Hires WHERE salesAssociateID = ?", employeeID);
       deleteWhere(conn, "DELETE FROM SalesAssociates WHERE salesAssociateID = ?", employeeID);
+      deleteWhere(conn, "DELETE FROM Employees WHERE employeeID = ?", employeeID);
       conn.commit();
     } catch (SQLException e) {
       conn.rollback();
@@ -329,6 +337,41 @@ public class ManagerHomeServlet extends HttpServlet {
 
   private void revokeDiscount(Connection conn, HttpServletRequest req, String managerID) throws SQLException {
     changeDiscount(conn, req, managerID, false);
+  }
+
+  private void assignBulkDiscount(Connection conn, HttpServletRequest req, String managerID) throws SQLException {
+    String targetGroup = required(req, "targetGroup");
+    String discountCode = required(req, "discountCode");
+
+    boolean customers = "customers".equals(targetGroup) || "everyone".equals(targetGroup);
+    boolean employees = "employees".equals(targetGroup) || "everyone".equals(targetGroup);
+    if (!customers && !employees) {
+      throw new IllegalArgumentException("Choose Customers, Employees, or Everyone.");
+    }
+
+    boolean oldAutoCommit = conn.getAutoCommit();
+    conn.setAutoCommit(false);
+    try {
+      if (customers) {
+        insertBulkDiscount(conn,
+            "INSERT IGNORE INTO CustomerDiscounts (customerEmail, customerDiscountCode) "
+                + "SELECT email, ? FROM Customers",
+            discountCode);
+      }
+      if (employees) {
+        insertBulkDiscount(conn,
+            "INSERT IGNORE INTO EmployeeDiscounts (employeeID, employeeDiscountCode) "
+                + "SELECT employeeID, ? FROM Employees",
+            discountCode);
+      }
+      recordDiscountUpdate(conn, managerID, discountCode);
+      conn.commit();
+    } catch (SQLException e) {
+      conn.rollback();
+      throw e;
+    } finally {
+      conn.setAutoCommit(oldAutoCommit);
+    }
   }
 
   private void changeDiscount(Connection conn, HttpServletRequest req, String managerID, boolean assign)
@@ -400,6 +443,13 @@ public class ManagerHomeServlet extends HttpServlet {
   private void insertIgnore(Connection conn, String sql, String value) throws SQLException {
     try (PreparedStatement ps = conn.prepareStatement(sql)) {
       ps.setString(1, value);
+      ps.executeUpdate();
+    }
+  }
+
+  private void insertBulkDiscount(Connection conn, String sql, String discountCode) throws SQLException {
+    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+      ps.setString(1, discountCode);
       ps.executeUpdate();
     }
   }
