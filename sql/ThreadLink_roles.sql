@@ -59,10 +59,10 @@ GRANT SELECT ON ThreadLink.CustomerDiscounts TO 'manager';
 GRANT SELECT ON ThreadLink.EmployeeDiscounts TO 'manager';
 GRANT SELECT ON ThreadLink.UpdatesItem TO 'manager';
 GRANT SELECT ON ThreadLink.UpdatesDiscount TO 'manager';
-GRANT INSERT, UPDATE, DELETE ON ThreadLink.Items TO 'manager';
+GRANT SELECT, INSERT, UPDATE, DELETE ON ThreadLink.Items TO 'manager';
 GRANT INSERT, DELETE ON ThreadLink.UpdatesItem TO 'manager';
-GRANT INSERT ON ThreadLink.Orders TO 'manager';
-GRANT INSERT ON ThreadLink.OrderItems TO 'manager';
+GRANT SELECT, INSERT ON ThreadLink.Orders TO 'manager';
+GRANT SELECT, INSERT, UPDATE, DELETE ON ThreadLink.OrderItems TO 'manager';
 GRANT SELECT, INSERT, DELETE ON ThreadLink.EmployeePlaces TO 'manager';
 
 -- employee management --
