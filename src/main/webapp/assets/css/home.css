@@ -201,6 +201,16 @@ h1 {
   color: var(--ink);
 }
 
+.button-login {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.button-login:hover {
+  background: var(--accent-dark);
+  color: white;
+}
+
 .feature-panel {
   display: grid;
   grid-template-rows: repeat(3, 1fr);

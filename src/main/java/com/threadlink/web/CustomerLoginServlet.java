@@ -26,7 +26,7 @@ public class CustomerLoginServlet extends HttpServlet {
 
         if (email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
             req.setAttribute("error", "Email and password are required.");
-            req.getRequestDispatcher("/account/login/login.jsp").forward(req, res);
+            req.getRequestDispatcher("/login/customer_login.jsp").forward(req, res);
             return;
         }
 
@@ -57,7 +57,7 @@ public class CustomerLoginServlet extends HttpServlet {
                 } 
                 else {
                     req.setAttribute("error", "Invalid email or password.");
-                    req.getRequestDispatcher("/account/login/login.jsp").forward(req, res);
+                    req.getRequestDispatcher("/login/customer_login.jsp").forward(req, res);
                 }
             }
 
@@ -69,6 +69,6 @@ public class CustomerLoginServlet extends HttpServlet {
     // GET just shows the login page.
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        req.getRequestDispatcher("/account/login/login.jsp").forward(req, res);
+        req.getRequestDispatcher("/login/customer_login.jsp").forward(req, res);
     }
 }

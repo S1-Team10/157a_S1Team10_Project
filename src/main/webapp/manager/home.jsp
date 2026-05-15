@@ -277,6 +277,46 @@
       </table>
     </div>
   </section>
+  <!-- Customers -->
+  <section class="manager-section">
+    <div class="catalog-page-header">
+      <span class="eyebrow">Customers</span>
+      <h2 class="catalog-title">All Customers</h2>
+    </div>
+
+    <input class="login-input" type="text" id="customerSearch" placeholder="Search customers..."
+           oninput="filterTable('customerSearch', 'customerTable')" style="margin: 1rem 0;">
+
+    <div class="manager-table-wrap">
+      <table class="results-table" id="customerTable">
+        <thead>
+        <tr>
+          <th>First Name</th><th>Last Name</th><th>Email</th><th>Phone</th><th>Subscribed</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% for (Map<String, Object> customer : customers) { %>
+        <tr>
+          <td><%= HtmlUtils.escape(String.valueOf(customer.get("firstName"))) %></td>
+          <td><%= HtmlUtils.escape(String.valueOf(customer.get("lastName"))) %></td>
+          <td><%= HtmlUtils.escape(String.valueOf(customer.get("email"))) %></td>
+          <td><%= HtmlUtils.escape(String.valueOf(customer.get("phoneNumber"))) %></td>
+          <td><%= Boolean.TRUE.equals(customer.get("isSubscribed")) ? "Yes" : "No" %></td>
+        </tr>
+        <% } %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <script>
+    function filterTable(inputId, tableId) {
+      var filter = document.getElementById(inputId).value.toLowerCase();
+      var rows = document.getElementById(tableId).getElementsByTagName("tr");
+      for (var i = 1; i < rows.length; i++) {
+        rows[i].style.display = rows[i].textContent.toLowerCase().includes(filter) ? "" : "none";
+      }
+    }
+  </script>
 </div>
 <script>
   (function () {

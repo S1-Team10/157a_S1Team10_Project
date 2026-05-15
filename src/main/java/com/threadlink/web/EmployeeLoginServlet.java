@@ -23,7 +23,7 @@ public class EmployeeLoginServlet extends HttpServlet {
 
         if (employeeID == null || employeeID.trim().isEmpty()) {
             req.setAttribute("error", "Employee ID is required.");
-            req.getRequestDispatcher("/employee/login/login.jsp").forward(req, res);
+            req.getRequestDispatcher("/login/employee_login.jsp").forward(req, res);
             return;
         }
 
@@ -39,7 +39,7 @@ public class EmployeeLoginServlet extends HttpServlet {
                 try (ResultSet rs = ps.executeQuery()) {
                     if (!rs.next()) {
                         req.setAttribute("error", "Employee ID not found.");
-                        req.getRequestDispatcher("/employee/login/login.jsp").forward(req, res);
+                        req.getRequestDispatcher("/login/employee_login.jsp").forward(req, res);
                         return;
                     }
                 }
@@ -72,6 +72,6 @@ public class EmployeeLoginServlet extends HttpServlet {
     // GET just shows the employee login page.
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        req.getRequestDispatcher("/employee/login/login.jsp").forward(req, res);
+        req.getRequestDispatcher("/login/employee_login.jsp").forward(req, res);
     }
 }

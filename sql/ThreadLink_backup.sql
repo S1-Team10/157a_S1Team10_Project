@@ -252,25 +252,51 @@ DROP TABLE IF EXISTS `Items`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Items` (
-                         `itemID` int NOT NULL AUTO_INCREMENT,
-                         `itemName` varchar(100) NOT NULL,
-                         `description` text,
-                         `price` decimal(10,2) NOT NULL,
-                         `minStock` int NOT NULL,
-                         `maxStock` int NOT NULL,
-                         PRIMARY KEY (`itemID`)
+  `itemID` int NOT NULL AUTO_INCREMENT,
+  `itemName` varchar(100) NOT NULL,
+  `description` text,
+  `price` decimal(10,2) NOT NULL,
+  `minStock` int NOT NULL,
+  `maxStock` int NOT NULL,
+  `sizes` varchar(50) DEFAULT NULL,
+  `colors` varchar(100) DEFAULT NULL,
+  `photo` varchar(255) DEFAULT NULL,
+  `currentStock` int DEFAULT NULL,
+  CONSTRAINT minValues CHECK (minStock >= 0 AND maxStock >=0 AND price >= 0 AND currentStock >= 0),
+  PRIMARY KEY (`itemID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `Items`
---
+-- Trigger to copy maxStock to currentStock during INSERT
+DELIMITER $$
+CREATE TRIGGER `ts_items_before_insert` 
+BEFORE INSERT ON `Items`
+FOR EACH ROW 
+BEGIN
+    IF NEW.`currentStock` IS NULL THEN
+        SET NEW.`currentStock` = NEW.`maxStock`;
+    END IF;
+END$$
+DELIMITER ;
 
 LOCK TABLES `Items` WRITE;
 /*!40000 ALTER TABLE `Items` DISABLE KEYS */;
-INSERT INTO `Items` VALUES (1,'Classic White Tee','Unisex 100% cotton short-sleeve t-shirt in white',12.99,20,200),(2,'Slim Fit Jeans','Dark-wash slim-fit denim jeans, sizes 28-40',49.99,15,150),(3,'Floral Summer Dress','Light chiffon floral print midi dress',39.99,10,100),(4,'Hooded Zip-Up Sweatshirt','Soft fleece zip-up hoodie with front pocket',34.99,20,180),(5,'Cargo Shorts','6-pocket cargo shorts in khaki and olive',27.99,15,120),(6,'Wool Blend Coat','Tailored wool-blend overcoat, available in black and gray',129.99,5,60),(7,'Striped Polo Shirt','Classic fit polo shirt with two-button placket',24.99,20,160),(8,'Yoga Leggings','High-waist 4-way stretch leggings for workouts',29.99,25,200),(9,'Denim Jacket','Classic denim trucker jacket with button closure',59.99,10,100),(10,'Graphic Print Tee','Unisex oversized tee with seasonal graphic print',18.99,20,180),(11,'Linen Button-Down Shirt','Breathable linen shirt, relaxed fit',36.99,10,120),(12,'Athletic Track Pants','Tapered jogger pants with side stripe',32.99,15,140);
+INSERT INTO `Items` (`itemID`, `itemName`, `description`, `price`, `minStock`, `maxStock`, `sizes`, `colors`, `photo`) VALUES 
+(1,'Classic White Tee','Unisex 100% cotton short-sleeve t-shirt in white',12.99,20,200,'S, M, L, XL','White','/images/classic-white-tee.jpg'),
+(2,'Slim Fit Jeans','Dark-wash slim-fit denim jeans, sizes 28-40',49.99,15,150,'28, 30, 32, 34, 36, 38, 40','Dark Wash','/images/slim-fit-jeans.jpg'),
+(3,'Floral Summer Dress','Light chiffon floral print midi dress',39.99,10,100,'XS, S, M, L','Floral Print','/images/floral-summer-dress.jpg'),
+(4,'Hooded Zip-Up Sweatshirt','Soft fleece zip-up hoodie with front pocket',34.99,20,180,'S, M, L, XL, XXL','Black, Gray, Navy','/images/hooded-zip-up.jpg'),
+(5,'Cargo Shorts','6-pocket cargo shorts in khaki and olive',27.99,15,120,'30, 32, 34, 36, 38','Khaki, Olive','/images/cargo-shorts.jpg'),
+(6,'Wool Blend Coat','Tailored wool-blend overcoat, available in black and gray',129.99,5,60,'M, L, XL','Black, Gray','/images/wool-blend-coat.jpg'),
+(7,'Striped Polo Shirt','Classic fit polo shirt with two-button placket',24.99,20,160,'S, M, L, XL','Blue/White, Red/White','/images/striped-polo.jpg'),
+(8,'Yoga Leggings','High-waist 4-way stretch leggings for workouts',29.99,25,200,'XS, S, M, L','Black, Charcoal, Navy','/images/yoga-leggings.jpg'),
+(9,'Denim Jacket','Classic denim trucker jacket with button closure',59.99,10,100,'S, M, L, XL','Classic Blue','/images/denim-jacket.jpg'),
+(10,'Graphic Print Tee','Unisex oversized tee with seasonal graphic print',18.99,20,180,'S, M, L, XL','Black, Off-White','/images/graphic-print-tee.jpg'),
+(11,'Linen Button-Down Shirt','Breathable linen shirt, relaxed fit',36.99,10,120,'S, M, L, XL','White, Beige, Light Blue','/images/linen-button-down.jpg'),
+(12,'Athletic Track Pants','Tapered jogger pants with side stripe',32.99,15,140,'S, M, L, XL','Black/White, Navy/White','/images/athletic-track-pants.jpg');
 /*!40000 ALTER TABLE `Items` ENABLE KEYS */;
 UNLOCK TABLES;
+
 
 --
 -- Table structure for table `Managers`
