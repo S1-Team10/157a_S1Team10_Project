@@ -134,7 +134,6 @@ public class ManagerHomeServlet extends HttpServlet {
     BigDecimal price = positiveMoney(req, "price");
     String colors = trim(req.getParameter("colors"));
     String sizes = trim(req.getParameter("sizes"));
-    String photoUrl = trim(req.getParameter("photoUrl"));
     int currentStock = nonNegativeInt(req, "currentStock");
     int minStock = nonNegativeInt(req, "minStock");
     int maxStock = nonNegativeInt(req, "maxStock");
@@ -145,17 +144,16 @@ public class ManagerHomeServlet extends HttpServlet {
     try {
       int itemID;
       try (PreparedStatement ps = conn.prepareStatement(
-          "INSERT INTO Items (itemName, description, price, colors, sizes, photoUrl, currentStock, minStock, maxStock) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+          "INSERT INTO Items (itemName, description, price, colors, sizes, currentStock, minStock, maxStock) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
           Statement.RETURN_GENERATED_KEYS)) {
         ps.setString(1, itemName);
         ps.setString(2, description);
         ps.setBigDecimal(3, price);
         ps.setString(4, colors);
         ps.setString(5, sizes);
-        ps.setString(6, photoUrl);
-        ps.setInt(7, currentStock);
-        ps.setInt(8, minStock);
-        ps.setInt(9, maxStock);
+        ps.setInt(6, currentStock);
+        ps.setInt(7, minStock);
+        ps.setInt(8, maxStock);
         ps.executeUpdate();
         try (ResultSet keys = ps.getGeneratedKeys()) {
           if (!keys.next()) throw new SQLException("Could not get new item ID.");
