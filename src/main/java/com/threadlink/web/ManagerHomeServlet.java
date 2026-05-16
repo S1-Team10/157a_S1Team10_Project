@@ -343,8 +343,9 @@ public class ManagerHomeServlet extends HttpServlet {
     String targetGroup = required(req, "targetGroup");
     String discountCode = required(req, "discountCode");
 
-    boolean customers = "customers".equals(targetGroup) || "everyone".equals(targetGroup);
-    boolean employees = "employees".equals(targetGroup) || "everyone".equals(targetGroup);
+    boolean customers = "customers".equals(targetGroup);
+    boolean employees = "employees".equals(targetGroup);
+    boolean subscribers = "subscribers".equals(targetGroup);
     if (!customers && !employees) {
       throw new IllegalArgumentException("Choose Customers, Employees, or Everyone.");
     }
@@ -356,6 +357,13 @@ public class ManagerHomeServlet extends HttpServlet {
         insertBulkDiscount(conn,
             "INSERT IGNORE INTO CustomerDiscounts (customerEmail, customerDiscountCode) "
                 + "SELECT email, ? FROM Customers",
+            discountCode);
+      }
+      if (subscribers) {
+        insertBulkDiscount(conn,
+            "INSERT IGNORE INTO CustomerDiscounts (customerEmail, customerDiscountCode) "
+                + "SELECT email, ? FROM Customers "
+                + "WHERE isSubscribed = 1",
             discountCode);
       }
       if (employees) {

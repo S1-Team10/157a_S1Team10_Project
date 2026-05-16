@@ -223,8 +223,8 @@
         <h3>Give Discount to Group</h3>
         <select class="login-input" name="targetGroup" required>
           <option value="customers">All customers</option>
+          <option value="subscribers">All subscribed customers</option>
           <option value="employees">All employees</option>
-          <option value="everyone">All customers and employees</option>
         </select>
         <input class="login-input" list="discountCodes" name="discountCode" placeholder="Discount code" required>
         <button class="button button-primary" type="submit">Apply Discount</button>
