@@ -7,9 +7,21 @@
   List<Map<String, Object>> discounts = (List<Map<String, Object>>) request.getAttribute("discounts");
   List<Map<String, Object>> customers = (List<Map<String, Object>>) request.getAttribute("customers");
   List<Map<String, Object>> employees = (List<Map<String, Object>>) request.getAttribute("employees");
+  List<Map<String, Object>> orders = (List<Map<String, Object>>) request.getAttribute("orders");
   String success = (String) request.getAttribute("success");
   String error = (String) request.getAttribute("error");
   String contextPath = request.getContextPath();
+%>
+<%!
+  private boolean isSubscribedValue(Object value) {
+    if (value instanceof Boolean) {
+      return (Boolean) value;
+    }
+    if (value instanceof Number) {
+      return ((Number) value).intValue() != 0;
+    }
+    return value != null && "true".equalsIgnoreCase(String.valueOf(value));
+  }
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -347,7 +359,7 @@
           <td><%= HtmlUtils.escape(String.valueOf(customer.get("lastName"))) %></td>
           <td><%= HtmlUtils.escape(String.valueOf(customer.get("email"))) %></td>
           <td><%= HtmlUtils.escape(String.valueOf(customer.get("phoneNumber"))) %></td>
-          <td><%= Boolean.TRUE.equals(customer.get("isSubscribed")) ? "Yes" : "No" %></td>
+          <td><%= isSubscribedValue(customer.get("isSubscribed")) ? "Yes" : "No" %></td>
         </tr>
         <% } %>
         </tbody>

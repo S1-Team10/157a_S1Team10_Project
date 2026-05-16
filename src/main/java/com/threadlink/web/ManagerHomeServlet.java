@@ -39,7 +39,7 @@ public class ManagerHomeServlet extends HttpServlet {
       req.setAttribute("discounts", queryRows(conn,
           "SELECT discountCode, discountName, percentOff, startDate, endDate FROM Discounts ORDER BY discountCode"));
       req.setAttribute("customers", queryRows(conn,
-          "SELECT email, firstName, lastName FROM Customers ORDER BY email"));
+          "SELECT email, firstName, lastName, phoneNumber, isSubscribed FROM Customers ORDER BY email"));
       req.setAttribute("employees", queryRows(conn,
           "SELECT employeeID, name, email FROM Employees ORDER BY employeeID"));
     } catch (SQLException e) {
@@ -134,6 +134,7 @@ public class ManagerHomeServlet extends HttpServlet {
     BigDecimal price = positiveMoney(req, "price");
     String colors = trim(req.getParameter("colors"));
     String sizes = trim(req.getParameter("sizes"));
+    String photoUrl = trim(req.getParameter("photoUrl"));
     int currentStock = nonNegativeInt(req, "currentStock");
     int minStock = nonNegativeInt(req, "minStock");
     int maxStock = nonNegativeInt(req, "maxStock");
@@ -144,16 +145,17 @@ public class ManagerHomeServlet extends HttpServlet {
     try {
       int itemID;
       try (PreparedStatement ps = conn.prepareStatement(
-          "INSERT INTO Items (itemName, description, price, colors, sizes, currentStock, minStock, maxStock) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+          "INSERT INTO Items (itemName, description, price, colors, sizes, photoUrl, currentStock, minStock, maxStock) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
           Statement.RETURN_GENERATED_KEYS)) {
         ps.setString(1, itemName);
         ps.setString(2, description);
         ps.setBigDecimal(3, price);
         ps.setString(4, colors);
         ps.setString(5, sizes);
-        ps.setInt(6, currentStock);
-        ps.setInt(7, minStock);
-        ps.setInt(8, maxStock);
+        ps.setString(6, photoUrl);
+        ps.setInt(7, currentStock);
+        ps.setInt(8, minStock);
+        ps.setInt(9, maxStock);
         ps.executeUpdate();
         try (ResultSet keys = ps.getGeneratedKeys()) {
           if (!keys.next()) throw new SQLException("Could not get new item ID.");
