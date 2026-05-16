@@ -104,7 +104,19 @@ CREATE TABLE `Customers` (
 
 LOCK TABLES `Customers` WRITE;
 /*!40000 ALTER TABLE `Customers` DISABLE KEYS */;
-INSERT INTO `Customers` VALUES (NULL,NULL,'alice.johnson@gmail.com','hashed_pw_001','4081234567','1995-03-12',1),(NULL,NULL,'bob.smith@yahoo.com','hashed_pw_002','4082345678','1990-07-24',0),(NULL,NULL,'carol.white@hotmail.com','hashed_pw_003','4083456789','1988-11-05',1),(NULL,NULL,'david.lee@gmail.com','hashed_pw_004','4084567890','2000-01-30',1),(NULL,NULL,'emma.davis@outlook.com','hashed_pw_005',NULL,'1997-06-15',0),(NULL,NULL,'frank.miller@gmail.com','hashed_pw_006','4086789012','1985-09-22',1),(NULL,NULL,'grace.wilson@icloud.com','hashed_pw_007','4087890123',NULL,0),(NULL,NULL,'henry.moore@gmail.com','hashed_pw_008','4088901234','1993-04-18',1),(NULL,NULL,'isabella.taylor@yahoo.com','hashed_pw_009','4089012345','2001-12-03',0),(NULL,NULL,'james.anderson@gmail.com','hashed_pw_010','4080123456','1996-08-27',1),(NULL,NULL,'karen.thomas@hotmail.com','hashed_pw_011','4081357924','1989-02-14',1),(NULL,NULL,'liam.jackson@outlook.com','hashed_pw_012',NULL,'1998-05-09',0);
+INSERT INTO `Customers` VALUES 
+('Alice','Johnson','alice.johnson@gmail.com','hashed_pw_001','4081234567','1995-03-12',1),
+('Bob','Smith','bob.smith@yahoo.com','hashed_pw_002','4082345678','1990-07-24',0),
+('Carol','White','carol.white@hotmail.com','hashed_pw_003','4083456789','1988-11-05',1),
+('David','Lee','david.lee@gmail.com','hashed_pw_004','4084567890','2000-01-30',1),
+('Emma','Davis','emma.davis@outlook.com','hashed_pw_005',NULL,'1997-06-15',0),
+('Frank','Miller','frank.miller@gmail.com','hashed_pw_006','4086789012','1985-09-22',1),
+('Grace','Wilson','grace.wilson@icloud.com','hashed_pw_007','4087890123',NULL,0),
+('Henry','Moore','henry.moore@gmail.com','hashed_pw_008','4088901234','1993-04-18',1),
+('Isabella','Taylor','isabella.taylor@yahoo.com','hashed_pw_009','4089012345','2001-12-03',0),
+('James','Anderson','james.anderson@gmail.com','hashed_pw_010','4080123456','1996-08-27',1),
+('Karen','Thomas','karen.thomas@hotmail.com','hashed_pw_011','4081357924','1989-02-14',1),
+('Liam','Jackson','liam.jackson@outlook.com','hashed_pw_012',NULL,'1998-05-09',0);
 /*!40000 ALTER TABLE `Customers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -260,7 +272,6 @@ CREATE TABLE `Items` (
   `maxStock` int NOT NULL,
   `sizes` varchar(50) DEFAULT NULL,
   `colors` varchar(100) DEFAULT NULL,
-  `photo` varchar(255) DEFAULT NULL,
   `currentStock` int DEFAULT NULL,
   CONSTRAINT minValues CHECK (minStock >= 0 AND maxStock >=0 AND price >= 0 AND currentStock >= 0),
   PRIMARY KEY (`itemID`)
@@ -281,19 +292,19 @@ DELIMITER ;
 
 LOCK TABLES `Items` WRITE;
 /*!40000 ALTER TABLE `Items` DISABLE KEYS */;
-INSERT INTO `Items` (`itemID`, `itemName`, `description`, `price`, `minStock`, `maxStock`, `sizes`, `colors`, `photo`) VALUES 
-(1,'Classic White Tee','Unisex 100% cotton short-sleeve t-shirt in white',12.99,20,200,'S, M, L, XL','White','/images/classic-white-tee.jpg'),
-(2,'Slim Fit Jeans','Dark-wash slim-fit denim jeans, sizes 28-40',49.99,15,150,'28, 30, 32, 34, 36, 38, 40','Dark Wash','/images/slim-fit-jeans.jpg'),
-(3,'Floral Summer Dress','Light chiffon floral print midi dress',39.99,10,100,'XS, S, M, L','Floral Print','/images/floral-summer-dress.jpg'),
-(4,'Hooded Zip-Up Sweatshirt','Soft fleece zip-up hoodie with front pocket',34.99,20,180,'S, M, L, XL, XXL','Black, Gray, Navy','/images/hooded-zip-up.jpg'),
-(5,'Cargo Shorts','6-pocket cargo shorts in khaki and olive',27.99,15,120,'30, 32, 34, 36, 38','Khaki, Olive','/images/cargo-shorts.jpg'),
-(6,'Wool Blend Coat','Tailored wool-blend overcoat, available in black and gray',129.99,5,60,'M, L, XL','Black, Gray','/images/wool-blend-coat.jpg'),
-(7,'Striped Polo Shirt','Classic fit polo shirt with two-button placket',24.99,20,160,'S, M, L, XL','Blue/White, Red/White','/images/striped-polo.jpg'),
-(8,'Yoga Leggings','High-waist 4-way stretch leggings for workouts',29.99,25,200,'XS, S, M, L','Black, Charcoal, Navy','/images/yoga-leggings.jpg'),
-(9,'Denim Jacket','Classic denim trucker jacket with button closure',59.99,10,100,'S, M, L, XL','Classic Blue','/images/denim-jacket.jpg'),
-(10,'Graphic Print Tee','Unisex oversized tee with seasonal graphic print',18.99,20,180,'S, M, L, XL','Black, Off-White','/images/graphic-print-tee.jpg'),
-(11,'Linen Button-Down Shirt','Breathable linen shirt, relaxed fit',36.99,10,120,'S, M, L, XL','White, Beige, Light Blue','/images/linen-button-down.jpg'),
-(12,'Athletic Track Pants','Tapered jogger pants with side stripe',32.99,15,140,'S, M, L, XL','Black/White, Navy/White','/images/athletic-track-pants.jpg');
+INSERT INTO `Items` (`itemID`, `itemName`, `description`, `price`, `minStock`, `maxStock`, `sizes`, `colors`) VALUES 
+(1,'Classic White Tee','Unisex 100% cotton short-sleeve t-shirt in white',12.99,20,200,'S, M, L, XL','White'),
+(2,'Slim Fit Jeans','Dark-wash slim-fit denim jeans, sizes 28-40',49.99,15,150,'28, 30, 32, 34, 36, 38, 40','Dark Wash'),
+(3,'Floral Summer Dress','Light chiffon floral print midi dress',39.99,10,100,'XS, S, M, L','Floral Print'),
+(4,'Hooded Zip-Up Sweatshirt','Soft fleece zip-up hoodie with front pocket',34.99,20,180,'S, M, L, XL, XXL','Black, Gray, Navy'),
+(5,'Cargo Shorts','6-pocket cargo shorts in khaki and olive',27.99,15,120,'30, 32, 34, 36, 38','Khaki, Olive'),
+(6,'Wool Blend Coat','Tailored wool-blend overcoat, available in black and gray',129.99,5,60,'M, L, XL','Black, Gray'),
+(7,'Striped Polo Shirt','Classic fit polo shirt with two-button placket',24.99,20,160,'S, M, L, XL','Blue/White, Red/White'),
+(8,'Yoga Leggings','High-waist 4-way stretch leggings for workouts',29.99,25,200,'XS, S, M, L','Black, Charcoal, Navy'),
+(9,'Denim Jacket','Classic denim trucker jacket with button closure',59.99,10,100,'S, M, L, XL','Classic Blue'),
+(10,'Graphic Print Tee','Unisex oversized tee with seasonal graphic print',18.99,20,180,'S, M, L, XL','Black, Off-White'),
+(11,'Linen Button-Down Shirt','Breathable linen shirt, relaxed fit',36.99,10,120,'S, M, L, XL','White, Beige, Light Blue'),
+(12,'Athletic Track Pants','Tapered jogger pants with side stripe',32.99,15,140,'S, M, L, XL','Black/White, Navy/White');
 /*!40000 ALTER TABLE `Items` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -332,6 +343,9 @@ DROP TABLE IF EXISTS `OrderItems`;
 CREATE TABLE `OrderItems` (
                               `orderID` int NOT NULL,
                               `itemID` int NOT NULL,
+                              `quantity` int NOT NULL DEFAULT '1',
+                              `selectedSize` varchar(50) NOT NULL DEFAULT '',
+                              `selectedColor` varchar(100) NOT NULL DEFAULT '',
                               PRIMARY KEY (`orderID`,`itemID`),
                               KEY `itemID` (`itemID`),
                               CONSTRAINT `orderitems_ibfk_1` FOREIGN KEY (`orderID`) REFERENCES `Orders` (`orderID`),
@@ -345,7 +359,7 @@ CREATE TABLE `OrderItems` (
 
 LOCK TABLES `OrderItems` WRITE;
 /*!40000 ALTER TABLE `OrderItems` DISABLE KEYS */;
-INSERT INTO `OrderItems` VALUES (1,1),(8,1),(10,1),(15,1),(2,2),(13,2),(15,2),(3,3),(1,4),(11,4),(15,4),(8,5),(10,5),(4,6),(13,6),(14,6),(5,7),(5,8),(8,8),(9,8),(15,8),(6,9),(11,9),(14,9),(6,10),(7,10),(12,11),(14,12);
+INSERT INTO `OrderItems` VALUES (1,1,1,'M','White'),(8,1,1,'M','White'),(10,1,1,'M','White'),(15,1,1,'M','White'),(2,2,1,'32','Dark Wash'),(13,2,1,'32','Dark Wash'),(15,2,1,'32','Dark Wash'),(3,3,1,'M','Blue Floral'),(1,4,1,'L','Navy'),(11,4,1,'L','Navy'),(15,4,1,'L','Navy'),(8,5,1,'34','Khaki'),(10,5,1,'34','Khaki'),(4,6,1,'M','Black'),(13,6,1,'M','Black'),(14,6,1,'M','Black'),(5,7,1,'M','Navy Stripe'),(5,8,1,'M','Black'),(8,8,1,'M','Black'),(9,8,1,'M','Black'),(15,8,1,'M','Black'),(6,9,1,'L','Medium Wash'),(11,9,1,'L','Medium Wash'),(14,9,1,'L','Medium Wash'),(6,10,1,'L','Cream'),(7,10,1,'L','Cream'),(12,11,1,'M','White'),(14,12,1,'M','Black');
 /*!40000 ALTER TABLE `OrderItems` ENABLE KEYS */;
 UNLOCK TABLES;
 
