@@ -32,7 +32,7 @@ public class ManagerHomeServlet extends HttpServlet {
     try (Connection conn = DB.get(Role.MANAGER, getServletContext())) {
       req.setAttribute("manager", getEmployee(conn, managerID));
       req.setAttribute("items", queryRows(conn,
-          "SELECT itemID, itemName, description, price, minStock, maxStock FROM Items ORDER BY itemID"));
+          "SELECT * FROM Items ORDER BY itemID"));
       req.setAttribute("salesAssociates", queryRows(conn,
           "SELECT e.employeeID, e.name, e.email, e.phoneNumber FROM Employees e "
               + "JOIN SalesAssociates sa ON sa.salesAssociateID = e.employeeID ORDER BY e.employeeID"));
@@ -129,6 +129,9 @@ public class ManagerHomeServlet extends HttpServlet {
     String itemName = required(req, "itemName");
     String description = trim(req.getParameter("description"));
     BigDecimal price = positiveMoney(req, "price");
+    String colors = trim(req.getParameter("colors"));
+    String sizes = trim(req.getParameter("sizes"));
+    int currentStock = nonNegativeInt(req, "currentStock");
     int minStock = nonNegativeInt(req, "minStock");
     int maxStock = nonNegativeInt(req, "maxStock");
     validateStockLimits(minStock, maxStock);
@@ -138,13 +141,16 @@ public class ManagerHomeServlet extends HttpServlet {
     try {
       int itemID;
       try (PreparedStatement ps = conn.prepareStatement(
-          "INSERT INTO Items (itemName, description, price, minStock, maxStock) VALUES (?, ?, ?, ?, ?)",
+          "INSERT INTO Items (itemName, description, price, colors, sizes, currentStock, minStock, maxStock) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
           Statement.RETURN_GENERATED_KEYS)) {
         ps.setString(1, itemName);
         ps.setString(2, description);
         ps.setBigDecimal(3, price);
-        ps.setInt(4, minStock);
-        ps.setInt(5, maxStock);
+        ps.setString(4, colors);
+        ps.setString(5, sizes);
+        ps.setInt(6, currentStock);
+        ps.setInt(7, minStock);
+        ps.setInt(8, maxStock);
         ps.executeUpdate();
         try (ResultSet keys = ps.getGeneratedKeys()) {
           if (!keys.next()) throw new SQLException("Could not get new item ID.");
@@ -189,6 +195,7 @@ public class ManagerHomeServlet extends HttpServlet {
   private void updateItem(Connection conn, HttpServletRequest req, String managerID) throws SQLException {
     int itemID = positiveInt(req, "itemID");
     BigDecimal price = positiveMoney(req, "price");
+    int currentStock = nonNegativeInt(req, "currentStock");
     int minStock = nonNegativeInt(req, "minStock");
     int maxStock = nonNegativeInt(req, "maxStock");
     validateStockLimits(minStock, maxStock);
@@ -196,11 +203,12 @@ public class ManagerHomeServlet extends HttpServlet {
     boolean oldAutoCommit = conn.getAutoCommit();
     conn.setAutoCommit(false);
     try (PreparedStatement ps = conn.prepareStatement(
-        "UPDATE Items SET price = ?, minStock = ?, maxStock = ? WHERE itemID = ?")) {
+        "UPDATE Items SET price = ?, currentStock = ?, minStock = ?, maxStock = ? WHERE itemID = ?")) {
       ps.setBigDecimal(1, price);
-      ps.setInt(2, minStock);
-      ps.setInt(3, maxStock);
-      ps.setInt(4, itemID);
+      ps.setInt(2, currentStock);
+      ps.setInt(3, minStock);
+      ps.setInt(4, maxStock);
+      ps.setInt(5, itemID);
       if (ps.executeUpdate() == 0) {
         throw new IllegalArgumentException("Item not found.");
       }

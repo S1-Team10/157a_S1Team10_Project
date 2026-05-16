@@ -21,11 +21,15 @@ public class EmployeeHomeServlet extends HttpServlet {
         Role role = SessionUtil.getRole(session);
 
         try (Connection conn = DB.get(role, getServletContext())) {
-            req.setAttribute("employee", getEmployee(conn, employeeID));
+            Map<String, Object> employee = getEmployee(conn, employeeID);
+            req.setAttribute("employee", employee);
+            req.setAttribute("name", employee.get("name"));
+            req.setAttribute("email", employee.get("email"));
+            req.setAttribute("phoneNumber", employee.get("phoneNumber"));
 
             // load all items so sales associate can view stock levels
             req.setAttribute("items", queryRows(conn,
-                    "SELECT itemID, itemName, description, price, minStock, maxStock FROM Items ORDER BY itemID"));
+                    "SELECT * FROM Items ORDER BY itemID"));
 
             // load all employees so sales associate can view staff list
             req.setAttribute("employees", queryRows(conn,
@@ -52,7 +56,7 @@ public class EmployeeHomeServlet extends HttpServlet {
 
         try (Connection conn = DB.get(Role.SALES_ASSOCIATE, getServletContext())) {
             if ("updateStock".equals(action)) {
-                // sales associate can update minStock/maxStock only
+                // sales associate can update stock levels only
                 updateStock(conn, req);
                 flash(req, "employeeSuccess", "Stock updated.");
             } else {
@@ -67,9 +71,10 @@ public class EmployeeHomeServlet extends HttpServlet {
         res.sendRedirect(req.getContextPath() + "/employee/home");
     }
 
-    // updates minStock and maxStock only
+    // updates currentStock, minStock, and maxStock only
     private void updateStock(Connection conn, HttpServletRequest req) throws SQLException {
         int itemID = positiveInt(req, "itemID");
+        int currentStock = nonNegativeInt(req, "currentStock");
         int minStock = nonNegativeInt(req, "minStock");
         int maxStock = nonNegativeInt(req, "maxStock");
 
@@ -78,10 +83,11 @@ public class EmployeeHomeServlet extends HttpServlet {
         }
 
         try (PreparedStatement ps = conn.prepareStatement(
-                "UPDATE Items SET minStock = ?, maxStock = ? WHERE itemID = ?")) {
-            ps.setInt(1, minStock);
-            ps.setInt(2, maxStock);
-            ps.setInt(3, itemID);
+                "UPDATE Items SET currentStock = ?, minStock = ?, maxStock = ? WHERE itemID = ?")) {
+            ps.setInt(1, currentStock);
+            ps.setInt(2, minStock);
+            ps.setInt(3, maxStock);
+            ps.setInt(4, itemID);
             if (ps.executeUpdate() == 0) {
                 throw new IllegalArgumentException("Item not found.");
             }

@@ -5,7 +5,11 @@
         response.sendRedirect(request.getContextPath() + "/customer/home");
         return;
     }
-    if (currentRole == Role.SALES_ASSOCIATE || currentRole == Role.MANAGER) {
+    if (currentRole == Role.MANAGER) {
+        response.sendRedirect(request.getContextPath() + "/manager/home");
+        return;
+    }
+    if (currentRole == Role.SALES_ASSOCIATE) {
         response.sendRedirect(request.getContextPath() + "/employee/home");
         return;
     }

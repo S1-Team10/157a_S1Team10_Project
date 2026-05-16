@@ -52,6 +52,42 @@
     <% } %>
   </section>
 
+  <!-- Order history -->
+  <section class="catalog-page">
+      <div class="catalog-page-header">
+          <div>
+              <span class="eyebrow">Order History</span>
+              <h2 class="catalog-title">Your Orders</h2>
+          </div>
+      </div>
+
+      <% if (orders == null || orders.isEmpty()) { %>
+      <p class="message">You have not placed any orders yet.</p>
+      <% } else { %>
+      <table class="results-table">
+          <thead>
+          <tr>
+              <th scope="col">Order ID</th>
+              <th scope="col">Total</th>
+              <th scope="col">Date</th>
+          </tr>
+          </thead>
+          <tbody>
+          <% for (Map<String, Object> order : orders) { %>
+          <tr>
+              <td>#<%= order.get("orderId") %>
+              </td>
+              <td class="price">$<%= order.get("totalAmount") %>
+              </td>
+              <td><%= order.get("orderDate") %>
+              </td>
+          </tr>
+          <% } %>
+          </tbody>
+      </table>
+      <% } %>
+  </section>
+
   <section class="manager-section">
     <div class="catalog-page-header">
       <span class="eyebrow">Inventory</span>
@@ -65,6 +101,9 @@
         <input class="login-input" type="text" name="itemName" placeholder="Item name" required>
         <input class="login-input" type="text" name="description" placeholder="Description">
         <input class="login-input" type="number" name="price" min="0.01" step="0.01" placeholder="Price" required>
+        <input class="login-input" type="text" name="colors" placeholder="Colors">
+        <input class="login-input" type="text" name="sizes" placeholder="Sizes">
+        <input class="login-input" type="number" name="currentStock" min="0" step="1" placeholder="Current stock" required>
         <input class="login-input" type="number" name="minStock" min="0" step="1" placeholder="Minimum stock" required>
         <input class="login-input" type="number" name="maxStock" min="0" step="1" placeholder="Maximum stock" required>
         <button class="button button-primary" type="submit">Add Item</button>
@@ -75,6 +114,7 @@
         <h3>Set Price and Stock Limits</h3>
         <input class="login-input" list="itemIds" name="itemID" placeholder="Item ID" required>
         <input class="login-input" type="number" name="price" min="0.01" step="0.01" placeholder="New price" required>
+        <input class="login-input" type="number" name="currentStock" min="0" step="1" placeholder="Current stock" required>
         <input class="login-input" type="number" name="minStock" min="0" step="1" placeholder="Minimum stock" required>
         <input class="login-input" type="number" name="maxStock" min="0" step="1" placeholder="Maximum stock" required>
         <button class="button button-primary" type="submit">Update Item</button>
@@ -102,6 +142,9 @@
           <th>Name</th>
           <th>Description</th>
           <th>Price</th>
+          <th>Colors</th>
+          <th>Sizes</th>
+          <th>Current</th>
           <th>Min</th>
           <th>Max</th>
         </tr>
@@ -113,6 +156,9 @@
             <td><%= HtmlUtils.escape(String.valueOf(item.get("itemName"))) %></td>
             <td><%= HtmlUtils.escape(String.valueOf(item.get("description"))) %></td>
             <td class="price">$<%= item.get("price") %></td>
+            <td><%= HtmlUtils.escape(String.valueOf(item.get("colors") != null ? item.get("colors") : item.get("color") != null ? item.get("color") : "")) %></td>
+            <td><%= HtmlUtils.escape(String.valueOf(item.get("sizes") != null ? item.get("sizes") : item.get("size") != null ? item.get("size") : "")) %></td>
+            <td><%= item.get("currentStock") != null ? item.get("currentStock") : "" %></td>
             <td><%= item.get("minStock") %></td>
             <td><%= item.get("maxStock") %></td>
           </tr>
