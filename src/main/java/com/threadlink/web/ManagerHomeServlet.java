@@ -144,7 +144,7 @@ public class ManagerHomeServlet extends HttpServlet {
     try {
       int itemID;
       try (PreparedStatement ps = conn.prepareStatement(
-          "INSERT INTO Items (itemName, description, price, colors, sizes, currentStock, minStock, maxStock) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+          "INSERT INTO Items (itemName, description, price, colors, sizes, currentStock, minStock, maxStock) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
           Statement.RETURN_GENERATED_KEYS)) {
         ps.setString(1, itemName);
         ps.setString(2, description);
@@ -354,8 +354,8 @@ public class ManagerHomeServlet extends HttpServlet {
     boolean customers = "customers".equals(targetGroup);
     boolean employees = "employees".equals(targetGroup);
     boolean subscribers = "subscribers".equals(targetGroup);
-    if (!customers && !employees) {
-      throw new IllegalArgumentException("Choose Customers, Employees, or Everyone.");
+    if (!customers && !subscribers && !employees) {
+      throw new IllegalArgumentException("Choose customers, subscribed customers, or employees.");
     }
 
     boolean oldAutoCommit = conn.getAutoCommit();
