@@ -30,7 +30,7 @@
         class="catalog-page"
         data-catalog-page
         data-selected-item-id="<%= HtmlUtils.escape(itemId) %>"
-        data-order-url="<%= request.getContextPath() %>/customer/orders"
+        data-order-url="<%= request.getContextPath() %>/orders"
         data-login-url="<%= request.getContextPath() %>/account/login"
       >
         <div class="catalog-page-header">
@@ -65,11 +65,16 @@
 
             <div class="item-detail-card" data-item-detail-card hidden>
               <span class="detail-kicker" data-detail-id></span>
+              <img class="detail-photo" data-detail-photo alt="" hidden>
               <h2 data-detail-name></h2>
               <p class="detail-price" data-detail-price></p>
               <p class="detail-description" data-detail-description></p>
 
               <div class="detail-meta">
+                <div class="detail-chip-group">
+                  <span class="detail-label">Current Stock</span>
+                  <p data-detail-current-stock></p>
+                </div>
                 <div class="detail-chip-group">
                   <span class="detail-label">Sizes</span>
                   <p data-detail-sizes></p>
@@ -78,10 +83,21 @@
                   <span class="detail-label">Colors</span>
                   <p data-detail-colors></p>
                 </div>
-                <div class="detail-chip-group">
+                <div class="detail-chip-group" data-stock-range-group hidden>
                   <span class="detail-label">Stock Range</span>
                   <p data-detail-stock></p>
                 </div>
+              </div>
+
+              <div class="detail-order-options">
+                <label>
+                  Size
+                  <select class="login-input" data-selected-size required></select>
+                </label>
+                <label>
+                  Color
+                  <select class="login-input" data-selected-color required></select>
+                </label>
               </div>
 
               <button class="button button-primary detail-cart-button" type="button" data-add-to-cart>
@@ -105,6 +121,11 @@
                 <span>Total</span>
                 <strong data-cart-total>$0.00</strong>
               </div>
+
+              <label class="discount-field">
+                Discount code
+                <input class="login-input" type="text" data-discount-code placeholder="Optional code">
+              </label>
 
               <p class="message" data-order-status hidden></p>
               <p class="message error" data-order-error hidden></p>
