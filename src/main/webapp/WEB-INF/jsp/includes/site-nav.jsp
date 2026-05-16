@@ -18,7 +18,7 @@
 
   Role currentRole = SessionUtil.getRole(request.getSession(false));
   boolean isLoggedIn = currentRole != null;
-  String accountHref = contextPath + "/login";
+  String accountHref = contextPath + "/login/index.jsp";
   if (currentRole == Role.CUSTOMER) {
     accountHref = contextPath + "/customer/home";
   } else if (currentRole == Role.MANAGER) {
@@ -56,8 +56,11 @@
     </form>
   <% } %>
 
-  <div class="nav-links">
-    <a class="nav-link<%= "rewards".equals(navActive) ? " is-active" : "" %>" href="<%= contextPath %>/rewards">Rewards</a>
-    <a class="nav-link login-link<%= accountActive ? " is-active" : "" %>" href="<%= accountHref %>"><%= accountLabel %></a>
+  <div class="nav-links">     
+    <% if (currentRole == Role.CUSTOMER) { %>
+      <a class="nav-link<%= "rewards".equals(navActive) ? " is-active" : "" %>" href="<%= contextPath %>/rewards">Rewards</a>     
+    <% } %>
+    <a class="nav-link login-link<%= accountActive ? " is-active" : "" %>" href="<%= accountHref %>"><%= accountLabel %></a>   
   </div>
+
 </nav>

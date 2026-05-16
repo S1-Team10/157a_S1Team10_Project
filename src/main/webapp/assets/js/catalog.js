@@ -10,12 +10,17 @@
   const detailEmpty = document.querySelector("[data-item-detail-empty]");
   const detailCard = document.querySelector("[data-item-detail-card]");
   const detailId = document.querySelector("[data-detail-id]");
+  const detailPhoto = document.querySelector("[data-detail-photo]");
   const detailName = document.querySelector("[data-detail-name]");
   const detailPrice = document.querySelector("[data-detail-price]");
   const detailDesc = document.querySelector("[data-detail-description]");
+  const detailCurrentStock = document.querySelector("[data-detail-current-stock]");
   const detailSizes = document.querySelector("[data-detail-sizes]");
   const detailColors = document.querySelector("[data-detail-colors]");
   const detailStock = document.querySelector("[data-detail-stock]");
+  const stockRangeGroup = document.querySelector("[data-stock-range-group]");
+  const selectedSize = document.querySelector("[data-selected-size]");
+  const selectedColor = document.querySelector("[data-selected-color]");
   const addToCartButton = document.querySelector("[data-add-to-cart]");
 
   const cartEmpty = document.querySelector("[data-cart-empty]");
@@ -24,6 +29,7 @@
   const cartTotal = document.querySelector("[data-cart-total]");
   const clearCartButton = document.querySelector("[data-cart-clear]");
   const placeOrderButton = document.querySelector("[data-place-order]");
+  const discountCodeInput = document.querySelector("[data-discount-code]");
   const orderStatus = document.querySelector("[data-order-status]");
   const orderError = document.querySelector("[data-order-error]");
 
@@ -81,7 +87,14 @@
   function loadCart() {
     try {
       const saved = JSON.parse(localStorage.getItem(cartStorageKey) || "[]");
-      return Array.isArray(saved) ? saved : [];
+      return Array.isArray(saved)
+        ? saved.map(item => ({
+            ...item,
+            quantity: Math.max(1, parseInt(item.quantity, 10) || 1),
+            selectedSize: item.selectedSize || "",
+            selectedColor: item.selectedColor || ""
+          })).filter(item => item.selectedSize && item.selectedColor)
+        : [];
     } catch (err) {
       return [];
     }
@@ -109,6 +122,40 @@
       if (av > bv) return sortDir === "asc" ? 1 : -1;
       return 0;
     });
+  }
+
+  function optionList(value) {
+    return String(value || "")
+      .split(",")
+      .map(part => part.trim())
+      .filter(Boolean);
+  }
+
+  function renderChoice(select, values, placeholder) {
+    select.innerHTML = "";
+
+    const placeholderOption = document.createElement("option");
+    placeholderOption.value = "";
+    placeholderOption.textContent = placeholder;
+    select.appendChild(placeholderOption);
+
+    values.forEach(value => {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = value;
+      select.appendChild(option);
+    });
+
+    select.disabled = values.length === 0;
+  }
+
+  async function readJsonResponse(res) {
+    const text = await res.text();
+    try {
+      return text ? JSON.parse(text) : {};
+    } catch (err) {
+      throw new Error(`Server returned a non-JSON response (${res.status}).`);
+    }
   }
 
   function setSortButtons() {
@@ -178,9 +225,15 @@
     detailName.textContent = item.itemName || "-";
     detailPrice.textContent = formatPrice(item.price);
     detailDesc.textContent = item.description || "No description available.";
-    detailSizes.textContent = "See in-store for available sizes";
-    detailColors.textContent = "See in-store for available colors";
-    detailStock.textContent = `Min ${item.minStock} - Max ${item.maxStock}`;
+    detailCurrentStock.textContent = `${item.currentStock ?? 0} available`;
+    detailSizes.textContent = item.sizes || "See in-store for available sizes";
+    detailColors.textContent = item.colors || "See in-store for available colors";
+    renderChoice(selectedSize, optionList(item.sizes || item.size), "Choose a size");
+    renderChoice(selectedColor, optionList(item.colors || item.color), "Choose a color");
+
+    const canShowStockRange = item.minStock != null && item.maxStock != null;
+    stockRangeGroup.hidden = !canShowStockRange;
+    detailStock.textContent = canShowStockRange ? `Min ${item.minStock} - Max ${item.maxStock}` : "";
 
     detailEmpty.hidden = true;
     detailCard.hidden = false;
@@ -198,14 +251,31 @@
 
   function addSelectedItemToCart() {
     const item = allItems.find(i => i.itemId === selectedId);
-    if (!item || cartItems.some(cartItem => cartItem.itemId === item.itemId)) {
+    const size = selectedSize.value;
+    const color = selectedColor.value;
+    if (!item || item.currentStock <= 0) {
+      return;
+    }
+
+    if (!size || !color) {
+      setOrderStatus("");
+      setOrderError("Choose a size and color before adding this item.");
+      return;
+    }
+
+    if (cartItems.some(cartItem => cartItem.itemId === item.itemId)) {
+      setOrderStatus("");
+      setOrderError("This item is already in your cart. Remove it first to choose a different size or color.");
       return;
     }
 
     cartItems.push({
       itemId: item.itemId,
       itemName: item.itemName,
-      price: item.price
+      price: item.price,
+      selectedSize: size,
+      selectedColor: color,
+      quantity: 1
     });
     saveCart();
     renderCart();
@@ -221,6 +291,17 @@
     updateAddToCartButton();
   }
 
+  function updateCartQuantity(itemId, quantity) {
+    const cartItem = cartItems.find(item => item.itemId === itemId);
+    const catalogItem = allItems.find(item => item.itemId === itemId);
+    if (!cartItem) return;
+
+    const maxQuantity = catalogItem ? catalogItem.currentStock : 99;
+    cartItem.quantity = Math.min(Math.max(1, quantity), Math.max(1, maxQuantity));
+    saveCart();
+    renderCart();
+  }
+
   function clearCart() {
     cartItems = [];
     saveCart();
@@ -230,9 +311,11 @@
 
   function updateAddToCartButton() {
     if (!selectedId || !addToCartButton) return;
-    const inCart = cartItems.some(item => item.itemId === selectedId);
-    addToCartButton.disabled = inCart;
-    addToCartButton.textContent = inCart ? "In Cart" : "Add to Cart";
+    const item = allItems.find(item => item.itemId === selectedId);
+    const inCart = cartItems.some(cartItem => cartItem.itemId === selectedId);
+    const outOfStock = item && item.currentStock <= 0;
+    addToCartButton.disabled = inCart || outOfStock;
+    addToCartButton.textContent = outOfStock ? "Out of Stock" : inCart ? "In Cart" : "Add to Cart";
   }
 
   function renderCart() {
@@ -244,16 +327,27 @@
 
     let total = 0;
     cartItems.forEach(item => {
-      total += priceNumber(item.price);
+      const catalogItem = allItems.find(catalogItem => catalogItem.itemId === item.itemId);
+      const maxQuantity = catalogItem ? catalogItem.currentStock : Math.max(1, item.quantity);
+      item.quantity = Math.min(Math.max(1, parseInt(item.quantity, 10) || 1), Math.max(1, maxQuantity));
+      total += priceNumber(item.price) * item.quantity;
       const li = document.createElement("li");
       li.innerHTML = `
         <span>
           <span class="cart-item-name">${escapeHtml(item.itemName)}</span>
-          <span class="cart-item-price">${formatPrice(item.price)}</span>
+          <span class="cart-item-price">${formatPrice(item.price)} each</span>
+          <span class="cart-item-options">${escapeHtml(item.selectedSize)} / ${escapeHtml(item.selectedColor)}</span>
         </span>
+        <label class="cart-quantity">
+          Qty
+          <input type="number" min="1" max="${maxQuantity}" value="${item.quantity}" data-quantity-item="${item.itemId}">
+        </label>
         <button class="cart-remove-button" type="button" data-remove-item="${item.itemId}">Remove</button>
       `;
 
+      li.querySelector("[data-quantity-item]").addEventListener("change", e => {
+        updateCartQuantity(item.itemId, parseInt(e.target.value, 10) || 1);
+      });
       li.querySelector("[data-remove-item]").addEventListener("click", () => {
         removeCartItem(item.itemId);
       });
@@ -271,7 +365,15 @@
     placeOrderButton.disabled = true;
 
     const body = new URLSearchParams();
-    cartItems.forEach(item => body.append("itemId", item.itemId));
+    if (discountCodeInput.value.trim()) {
+      body.append("discountCode", discountCodeInput.value.trim());
+    }
+    cartItems.forEach(item => {
+      body.append("itemId", item.itemId);
+      body.append("quantity", item.quantity);
+      body.append("selectedSize", item.selectedSize);
+      body.append("selectedColor", item.selectedColor);
+    });
 
     try {
       const res = await fetch(orderUrl, {
@@ -286,13 +388,14 @@
         throw new Error(`Please log in before placing an order: ${loginUrl}`);
       }
 
-      const data = await res.json();
+      const data = await readJsonResponse(res);
       if (!res.ok || data.error) {
         throw new Error(data.error || `Server error ${res.status}`);
       }
 
       clearCart();
       setOrderStatus(`Order #${data.orderId} placed. Total: ${formatPrice(data.totalAmount)}.`);
+      await fetchItems(searchInput.value.trim());
     } catch (err) {
       setOrderStatus("");
       setOrderError(err.message);
@@ -311,7 +414,7 @@
 
     try {
       const res = await fetch(`${apiUrl}?${params}`);
-      const data = await res.json();
+      const data = await readJsonResponse(res);
 
       if (!res.ok || data.error) {
         throw new Error(data.error || `Server error ${res.status}`);
@@ -378,6 +481,8 @@
   });
 
   addToCartButton.addEventListener("click", addSelectedItemToCart);
+  selectedSize.addEventListener("change", updateAddToCartButton);
+  selectedColor.addEventListener("change", updateAddToCartButton);
   clearCartButton.addEventListener("click", () => {
     clearCart();
     setOrderStatus("");

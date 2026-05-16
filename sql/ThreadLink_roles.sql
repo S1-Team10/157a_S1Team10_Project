@@ -27,12 +27,14 @@ GRANT SELECT ON ThreadLink.CustomerDiscounts TO 'customer';
 GRANT INSERT ON ThreadLink.Orders TO 'customer';
 GRANT INSERT ON ThreadLink.OrderItems TO 'customer';
 GRANT SELECT, INSERT ON ThreadLink.CustomerPlaces TO 'customer';
+GRANT UPDATE (currentStock) ON ThreadLink.Items TO 'customer';
 
 
 
 ------ sales associate ------
 -- browse website --
 GRANT SELECT ON ThreadLink.Items TO 'sales_associate';
+GRANT SELECT ON ThreadLink.Discounts TO 'sales_associate';
 
 -- view other employees --
 GRANT SELECT ON ThreadLink.Employees TO 'sales_associate';
@@ -41,10 +43,15 @@ GRANT SELECT ON ThreadLink.Managers TO 'sales_associate';
 GRANT SELECT ON ThreadLink.Hires TO 'sales_associate';
 
 -- view customers --
-GRANT SELECT (email, phoneNumber, isSubscribed) ON ThreadLink.Customers TO 'sales_associate';
+GRANT SELECT ON ThreadLink.Customers TO 'sales_associate';
 
 -- update stock --
-GRANT UPDATE (minStock, maxStock) ON ThreadLink.Items TO 'sales_associate';
+GRANT UPDATE (currentStock, minStock, maxStock) ON ThreadLink.Items TO 'sales_associate';
+
+-- place employee orders --
+GRANT INSERT ON ThreadLink.Orders TO 'sales_associate';
+GRANT INSERT ON ThreadLink.OrderItems TO 'sales_associate';
+GRANT SELECT, INSERT ON ThreadLink.EmployeePlaces TO 'sales_associate';
 
 
 

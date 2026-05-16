@@ -61,6 +61,8 @@ public class AuthFilter implements Filter {
         return path.equals("/")
             || path.equals("/index.jsp")
             || path.equals("/login")
+            || path.equals("/account/login")
+            || path.equals("/employee/login")
             || path.equals("/login/customer_login.jsp")
             || path.equals("/login/employee_login.jsp")
             || path.equals("/logout")

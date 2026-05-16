@@ -42,6 +42,9 @@
             background: radial-gradient(circle at top left, rgba(184, 92, 56, 0.18), transparent 32%),
             radial-gradient(circle at right, rgba(84, 111, 82, 0.12), transparent 28%),
             linear-gradient(180deg, #f8f3eb 0%, #f0e6d8 100%);
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh; 
         }
 
         .container {

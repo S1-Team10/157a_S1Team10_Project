@@ -134,6 +134,7 @@
   <servlet-mapping>
     <servlet-name>CustomerOrderServlet</servlet-name>
     <url-pattern>/customer/orders</url-pattern>
+    <url-pattern>/orders</url-pattern>
   </servlet-mapping>
 
   <servlet>
